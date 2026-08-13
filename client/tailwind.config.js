@@ -18,7 +18,7 @@ export default {
           faint: "#5B6272",
         },
         accent: {
-          DEFAULT: "#4F7CFF",
+          DEFAULT: "#f97316",
           hover: "#3D63E0",
         },
         line: {

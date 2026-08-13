@@ -1,5 +1,3 @@
-import React from "react";
-
 type Station = {
   label: string;
   state: "done" | "current" | "upcoming";
@@ -53,7 +51,7 @@ export default function LineDiagram() {
           to="0"
           dur="1s"
           repeatCount="indefinite"
-          timingFunction="linear"
+          calcMode="linear"
         />
       </path>
 

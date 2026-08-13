@@ -1,0 +1,116 @@
+import { useEffect } from "react";
+import { Link, useParams } from "react-router-dom";
+import SkillTree from "../components/roadmap/SkillTree";
+import AdSlot from "../components/ads/AdSlot";
+import { LineColor } from "../data/sampleRoadmaps";
+import { useAdminStore } from "../store/adminStore";
+
+const colorHex: Record<LineColor, string> = {
+  coral: "#FF6B4A",
+  teal: "#2FBF9E",
+  violet: "#9B8CFB",
+  amber: "#F0B429",
+};
+
+export default function RoadmapDetail() {
+  const { slug } = useParams();
+  const roadmap = useAdminStore((s) => s.roadmaps.find((r) => r.slug === slug));
+  const loadRoadmapDetail = useAdminStore((s) => s.loadRoadmapDetail);
+
+  useEffect(() => {
+    if (slug) void loadRoadmapDetail(slug);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [slug]);
+
+  if (!roadmap) {
+    return (
+      <div className="container-page py-24 text-center">
+        <p className="station-code mb-3">Line not found</p>
+        <h1 className="font-display text-2xl">We couldn't find that roadmap.</h1>
+        <Link to="/" className="mt-4 inline-block text-sm text-accent hover:text-accent-hover">
+          ← Back to all lines
+        </Link>
+      </div>
+    );
+  }
+
+  const firstAvailableNode = roadmap.nodes.find((n) => n.state !== "locked") ?? roadmap.nodes[0];
+
+  return (
+    <div className="container-page py-12">
+      <p className="station-code mb-3">
+        <Link to="/" className="hover:text-text-primary">Roadmaps</Link> / {roadmap.title}
+      </p>
+
+      <div className="grid gap-10 lg:grid-cols-[280px_1fr]">
+        {/* Sidebar: roadmap meta */}
+        <aside className="lg:sticky lg:top-24 lg:self-start">
+          <div className="mb-3 flex items-center gap-2">
+            <span className="h-2.5 w-2.5 rounded-full" style={{ background: colorHex[roadmap.color] }} />
+            <span className="font-mono text-xs text-text-muted">{roadmap.lineCode}</span>
+            {!roadmap.isPublished && (
+              <span className="rounded-full bg-border px-2 py-0.5 font-mono text-[10px] uppercase text-text-faint">Draft</span>
+            )}
+          </div>
+          <h1 className="font-display text-2xl font-semibold">{roadmap.title}</h1>
+          <p className="mt-3 text-sm text-text-muted">{roadmap.description}</p>
+
+          <div className="mt-6 space-y-4 text-sm">
+            <div>
+              <p className="station-code mb-1">Difficulty</p>
+              <p className="text-text-primary">{roadmap.difficulty}</p>
+            </div>
+            <div>
+              <p className="station-code mb-1">Estimated duration</p>
+              <p className="text-text-primary">{roadmap.estimatedDurationHours} hours</p>
+            </div>
+            <div>
+              <p className="station-code mb-1">Prerequisites</p>
+              <p className="text-text-primary">
+                {roadmap.prerequisites.length ? roadmap.prerequisites.join(", ") : "None"}
+              </p>
+            </div>
+            <div>
+              <p className="station-code mb-1">Career outcomes</p>
+              <ul className="list-disc space-y-1 pl-4 text-text-primary">
+                {roadmap.careerOutcomes.map((o) => (
+                  <li key={o}>{o}</li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
+          <div className="mt-6">
+            <div className="mb-1.5 flex items-center justify-between text-xs text-text-muted">
+              <span>Progress</span>
+              <span>{roadmap.progressPercent}%</span>
+            </div>
+            <div className="h-1.5 w-full rounded-full bg-border">
+              <div
+                className="h-1.5 rounded-full"
+                style={{ width: `${roadmap.progressPercent}%`, background: colorHex[roadmap.color] }}
+              />
+            </div>
+          </div>
+
+          {firstAvailableNode && (
+            <Link
+              to={`/roadmaps/${roadmap.slug}/${firstAvailableNode.slug}`}
+              className="mt-6 inline-block w-full rounded bg-accent px-4 py-2.5 text-center text-sm font-medium text-white hover:bg-accent-hover"
+            >
+              Continue: {firstAvailableNode.title} →
+            </Link>
+          )}
+
+          <AdSlot placement="roadmap_sidebar" className="mt-8" />
+        </aside>
+
+        {/* Main: skill tree */}
+        <div>
+          <p className="station-code mb-2">The line</p>
+          <SkillTree roadmapSlug={roadmap.slug} nodes={roadmap.nodes} color={roadmap.color} />
+        </div>
+      </div>
+    </div>
+  );
+}

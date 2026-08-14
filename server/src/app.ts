@@ -17,8 +17,27 @@ import adminRoutes from "./modules/admin/admin.routes.js";
 
 export const app = express();
 
+// CLIENT_ORIGIN can be a single URL or a comma-separated list (handy for
+// supporting both a production domain and Vercel preview deployments).
+// Trailing slashes are stripped before comparing, since "https://x.com" and
+// "https://x.com/" are the same origin but fail a naive exact-string match —
+// a mismatch here is the most common cause of "CORS error" in the browser
+// even when CLIENT_ORIGIN was set "correctly".
+const allowedOrigins = env.CLIENT_ORIGIN.split(",").map((o) => o.trim().replace(/\/$/, ""));
+console.log("CORS allowed origins:", allowedOrigins);
+
 app.use(helmet());
-app.use(cors({ origin: env.CLIENT_ORIGIN, credentials: true }));
+app.use(
+  cors({
+    origin(origin, callback) {
+      if (!origin) return callback(null, true); // same-origin, curl, server-to-server, etc.
+      const normalized = origin.replace(/\/$/, "");
+      if (allowedOrigins.includes(normalized)) return callback(null, true);
+      callback(new Error(`Origin ${origin} not allowed by CORS. Allowed: ${allowedOrigins.join(", ")}`));
+    },
+    credentials: true,
+  })
+);
 app.use(express.json());
 app.use(cookieParser());
 if (env.NODE_ENV !== "test") app.use(morgan(env.NODE_ENV === "development" ? "dev" : "combined"));
@@ -26,7 +45,9 @@ if (env.NODE_ENV !== "test") app.use(morgan(env.NODE_ENV === "development" ? "de
 const authLimiter = rateLimit({ windowMs: 15 * 60 * 1000, limit: 30, standardHeaders: true, legacyHeaders: false });
 const searchLimiter = rateLimit({ windowMs: 60 * 1000, limit: 60, standardHeaders: true, legacyHeaders: false });
 
-app.get("/api/health", (_req, res) => res.json({ status: "ok", time: new Date().toISOString() }));
+app.get("/api/health", (_req, res) =>
+  res.json({ status: "ok", time: new Date().toISOString(), allowedOrigins })
+);
 
 app.use("/api/auth", authLimiter, authRoutes);
 app.use("/api/roadmaps", roadmapsRoutes);

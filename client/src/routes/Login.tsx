@@ -78,12 +78,14 @@ export default function Login() {
         <p className="mt-4 text-center text-xs text-text-faint">
           Connects to the real API when it's running — falls back to a local demo session if it isn't reachable.
         </p>
-        <button
-          onClick={handleAdminDemo}
-          className="mt-3 w-full text-center text-xs text-text-faint underline hover:text-text-muted"
-        >
-          Demo: continue as admin →
-        </button>
+        {import.meta.env.DEV && (
+          <button
+            onClick={handleAdminDemo}
+            className="mt-3 w-full text-center text-xs text-text-faint underline hover:text-text-muted"
+          >
+            Demo: continue as admin →
+          </button>
+        )}
       </div>
     </div>
   );

@@ -7,6 +7,7 @@ import TopicDetail from "./routes/TopicDetail";
 import Login from "./routes/Login";
 import Signup from "./routes/Signup";
 import Dashboard from "./routes/Dashboard";
+import Search from "./routes/Search";
 import RequireAdmin from "./components/admin/RequireAdmin";
 import AdminLayout from "./routes/admin/AdminLayout";
 import AdminRoadmapList from "./routes/admin/AdminRoadmapList";
@@ -43,7 +44,7 @@ export default function App() {
         <Route path="/roadmaps/:roadmapSlug/:slug" element={<TopicDetail />} />
         <Route path="/topics/:slug" element={<TopicDetail />} />
         <Route path="/lesson/:id" element={<Placeholder label="Lesson" />} />
-        <Route path="/search" element={<Placeholder label="Search results" />} />
+        <Route path="/search" element={<Search />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/dashboard" element={<Dashboard />} />

@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useMemo, useState } from "react";
 import LineDiagram from "../components/roadmap/LineDiagram";
 import RoadmapCard, { RoadmapCardData } from "../components/roadmap/RoadmapCard";
@@ -71,6 +71,7 @@ const journeySteps = [
 
 export default function Home() {
   const [query, setQuery] = useState("");
+  const navigate = useNavigate();
   const [activeCategory, setActiveCategory] = useState<RoadmapCategory | "all">("all");
   
   // Added state for the Journey section
@@ -117,7 +118,10 @@ export default function Home() {
               </p>
 
               <form
-                onSubmit={(e) => e.preventDefault()}
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  if (query.trim()) navigate(`/search?q=${encodeURIComponent(query.trim())}`);
+                }}
                 className="mt-9 flex max-w-md items-center gap-1.5 rounded-xl border border-border bg-surface p-1.5 shadow-sm transition focus-within:border-accent/40 focus-within:ring-2 focus-within:ring-accent/15"
               >
                 <svg

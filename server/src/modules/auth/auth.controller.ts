@@ -5,10 +5,15 @@ import { asyncHandler, ApiError } from "../../utils/asyncHandler.js";
 import * as authService from "./auth.service.js";
 
 const REFRESH_COOKIE = "learnpath_refresh";
+const isProd = process.env.NODE_ENV === "production";
 const REFRESH_COOKIE_OPTS = {
   httpOnly: true,
-  sameSite: "lax" as const,
-  secure: process.env.NODE_ENV === "production",
+  // Frontend (Vercel) and backend (Render) live on different domains, so the
+  // cookie must be sameSite:"none" to survive the cross-site request — and
+  // "none" requires secure:true (the browser rejects it otherwise). In local
+  // dev, both run on localhost so "lax" is fine and avoids needing HTTPS.
+  sameSite: isProd ? ("none" as const) : ("lax" as const),
+  secure: isProd,
   path: "/api/auth",
   maxAge: 30 * 24 * 60 * 60 * 1000,
 };

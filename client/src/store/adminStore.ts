@@ -93,9 +93,14 @@ type AdminState = {
   roadmaps: AdminRoadmap[];
   topicResources: Record<string, ResourceData[]>;
   isOffline: boolean;
+  /** true while retryConnection is actively trying to reach a possibly-sleeping backend */
+  retrying: boolean;
   loaded: boolean;
 
   loadRoadmaps: () => Promise<void>;
+  /** Retries the API in the background after a cold-start-style failure, so the app
+   *  recovers automatically once a sleeping free-tier backend finishes waking up. */
+  retryConnection: () => Promise<void>;
   loadRoadmapDetail: (slug: string) => Promise<void>;
   loadTopicResources: (roadmapSlug: string, nodeSlug: string) => Promise<void>;
 
@@ -122,6 +127,7 @@ export const useAdminStore = create<AdminState>()((set, get) => ({
   roadmaps: [],
   topicResources: {},
   isOffline: false,
+  retrying: false,
   loaded: false,
 
   loadRoadmaps: async () => {
@@ -137,11 +143,39 @@ export const useAdminStore = create<AdminState>()((set, get) => ({
       }));
     } catch (err) {
       if (err instanceof ApiUnreachableError) {
+        // Show local demo data immediately so the UI isn't blank, but keep
+        // retrying in the background. Free-tier hosts (e.g. Render) can take
+        // 30-60s to wake from sleep, and the very first request during that
+        // window often fails outright rather than just being slow — without
+        // a retry, the app would stay stuck in demo mode for the rest of the
+        // session even after the backend comes online.
         set({ roadmaps: seedRoadmaps, topicResources: seedTopicResources, isOffline: true, loaded: true });
+        void get().retryConnection();
         return;
       }
       throw err;
     }
+  },
+
+  retryConnection: async () => {
+    set({ retrying: true });
+    const delaysMs = [3000, 6000, 10000, 15000, 15000]; // ~49s total — covers a typical cold start
+    for (const delay of delaysMs) {
+      await new Promise((resolve) => setTimeout(resolve, delay));
+      if (!get().isOffline) {
+        set({ retrying: false });
+        return; // already recovered another way
+      }
+
+      try {
+        const { roadmaps } = await roadmapsApi.listRoadmaps(useAuthStore.getState().accessToken);
+        set({ roadmaps: roadmaps.map((r) => apiRoadmapToLocal(r, [])), isOffline: false, retrying: false });
+        return; // success — the "Demo mode" badge disappears and real data takes over
+      } catch {
+        // still down — wait for the next delay and try again
+      }
+    }
+    set({ retrying: false }); // gave up — stays in demo mode until next page load
   },
 
   loadRoadmapDetail: async (slug) => {

@@ -15,6 +15,7 @@ export default function Nav() {
   const user = useAuthStore((s) => s.user);
   const logout = useAuthStore((s) => s.logout);
   const isOffline = useAdminStore((s) => s.isOffline);
+  const retrying = useAdminStore((s) => s.retrying);
   const navigate = useNavigate();
 
   function handleLogout() {
@@ -33,8 +34,11 @@ export default function Nav() {
             LearnPath
           </span>
           {isOffline && (
-            <span className="ml-1 rounded-full bg-border px-2 py-0.5 font-mono text-[10px] uppercase text-text-faint" title="API not reachable — showing local demo data">
-              Demo mode
+            <span
+              className="ml-1 rounded-full bg-border px-2 py-0.5 font-mono text-[10px] uppercase text-text-faint"
+              title={retrying ? "Reconnecting to the API — it may be waking up from sleep" : "API not reachable — showing local demo data"}
+            >
+              {retrying ? "Waking up server…" : "Demo mode"}
             </span>
           )}
         </Link>

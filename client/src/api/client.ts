@@ -1,4 +1,10 @@
-const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api";
+// Falls back to localhost in dev, and to the known production backend in a
+// production build — so a missing/un-redeployed VITE_API_BASE_URL on Vercel
+// doesn't silently point the app at the visitor's own localhost (which
+// always fails and was the real cause of "Demo mode" sticking in production).
+const API_BASE =
+  import.meta.env.VITE_API_BASE_URL ||
+  (import.meta.env.DEV ? "http://localhost:5000/api" : "https://routemap-8k8a.onrender.com/api");
 
 /** Thrown when the network request itself fails (server not running, no internet, CORS, etc.) —
  *  distinct from a real API error response, so callers can fall back to local/offline mode. */

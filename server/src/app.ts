@@ -13,6 +13,7 @@ import topicsRoutes from "./modules/topics/topics.routes.js";
 import progressRoutes from "./modules/progress/progress.routes.js";
 import searchRoutes from "./modules/search/search.routes.js";
 import dashboardRoutes from "./modules/dashboard/dashboard.routes.js";
+import practiceRoutes from "./modules/practice/practice.routes.js";
 import adminRoutes from "./modules/admin/admin.routes.js";
 
 export const app = express();
@@ -55,6 +56,7 @@ app.use("/api/topics", topicsRoutes);
 app.use("/api/progress", progressRoutes);
 app.use("/api/search", searchLimiter, searchRoutes);
 app.use("/api/dashboard", dashboardRoutes);
+app.use("/api/practice", practiceRoutes);
 app.use("/api/admin", adminRoutes);
 
 app.use(notFoundHandler);

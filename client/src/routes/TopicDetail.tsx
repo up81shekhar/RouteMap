@@ -1,10 +1,36 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import ResourceCard from "../components/resource/ResourceCard";
+import PracticeQuiz from "../components/practice/PracticeQuiz";
 import AdSlot from "../components/ads/AdSlot";
 import { getStaticTopicContent } from "../data/sampleRoadmaps";
 import { useProgressStore } from "../store/progressStore";
 import { useAdminStore } from "../store/adminStore";
+import * as practiceApi from "../api/practice";
+import { ApiPracticeQuestion } from "../api/practice";
+
+// Local fallback so the flagship Arrays example still has practice questions
+// in offline/demo mode, consistent with how its resources also fall back.
+const DEMO_ARRAYS_PRACTICE: ApiPracticeQuestion[] = [
+  {
+    _id: "demo-1", type: "mcq", difficulty: "easy",
+    prompt: "What is the time complexity of accessing an element by index in an array?",
+    options: ["O(1)", "O(n)", "O(log n)", "O(n^2)"], correctAnswer: "O(1)",
+    explanation: "Arrays store elements in contiguous memory, so the address of any index can be computed directly.",
+  },
+  {
+    _id: "demo-2", type: "mcq", difficulty: "easy",
+    prompt: "What is the time complexity of inserting an element at the beginning of an array?",
+    options: ["O(1)", "O(n)", "O(log n)", "O(1) amortized"], correctAnswer: "O(n)",
+    explanation: "Every existing element has to shift one position to make room, which takes linear time.",
+  },
+  {
+    _id: "demo-3", type: "mcq", difficulty: "medium",
+    prompt: "Which technique finds a pair with a target sum in a sorted array in O(n) time?",
+    options: ["Two pointer", "Binary search per element", "Nested loops", "Hashing only"], correctAnswer: "Two pointer",
+    explanation: "Two pointers starting at both ends move inward based on the current sum vs target, giving a single O(n) pass.",
+  },
+];
 
 export default function TopicDetail() {
   const { roadmapSlug, slug } = useParams();
@@ -16,11 +42,26 @@ export default function TopicDetail() {
   const topicKey = `${roadmapSlug}/${slug}`;
   const resources = useAdminStore((s) => s.topicResources[topicKey] ?? []);
 
+  const isOffline = useAdminStore((s) => s.isOffline);
+  const [practiceQuestions, setPracticeQuestions] = useState<ApiPracticeQuestion[]>([]);
+
   useEffect(() => {
     if (roadmapSlug) void loadRoadmapDetail(roadmapSlug);
     if (roadmapSlug && slug) void loadTopicResources(roadmapSlug, slug);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [roadmapSlug, slug]);
+
+  useEffect(() => {
+    if (!roadmapSlug || !slug) return;
+    if (isOffline) {
+      setPracticeQuestions(roadmapSlug === "dsa" && slug === "arrays" ? DEMO_ARRAYS_PRACTICE : []);
+      return;
+    }
+    practiceApi
+      .getPractice(roadmapSlug, slug)
+      .then(({ questions }) => setPracticeQuestions(questions))
+      .catch(() => setPracticeQuestions(roadmapSlug === "dsa" && slug === "arrays" ? DEMO_ARRAYS_PRACTICE : []));
+  }, [roadmapSlug, slug, isOffline]);
 
   const staticContent = useMemo(
     () => (roadmapSlug && slug && node ? getStaticTopicContent(roadmapSlug, slug, node.title) : undefined),
@@ -208,6 +249,13 @@ export default function TopicDetail() {
                   />
                 ))}
               </div>
+            </div>
+          )}
+
+          {practiceQuestions.length > 0 && (
+            <div className="mt-10">
+              <p className="station-code mb-3">Practice</p>
+              <PracticeQuiz questions={practiceQuestions} />
             </div>
           )}
         </div>

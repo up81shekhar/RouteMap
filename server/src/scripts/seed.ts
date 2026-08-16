@@ -9,6 +9,7 @@ import { connectDB, disconnectDB } from "../config/db.js";
 import { Roadmap } from "../models/Roadmap.js";
 import { RoadmapNode } from "../models/RoadmapNode.js";
 import { Resource } from "../models/Resource.js";
+import { PracticeQuestion } from "../models/PracticeQuestion.js";
 
 type Seed = {
   slug: string;
@@ -251,6 +252,41 @@ async function run() {
         { nodeId: arraysNode._id, roadmapSlug: "dsa", nodeSlug: "arrays", type: "practice", tag: "recommended", title: "20 array practice problems (Easy → Hard)", source: "LearnPath Practice", language: "English", order: 5 },
       ]);
       console.log("  ✓ Seeded Arrays curated resources");
+    }
+
+    const existingQuestions = await PracticeQuestion.countDocuments({ nodeId: arraysNode._id });
+    if (existingQuestions === 0) {
+      await PracticeQuestion.insertMany([
+        {
+          nodeId: arraysNode._id, roadmapSlug: "dsa", nodeSlug: "arrays", type: "mcq", difficulty: "easy",
+          prompt: "What is the time complexity of accessing an element by index in an array?",
+          options: ["O(1)", "O(n)", "O(log n)", "O(n^2)"], correctAnswer: "O(1)",
+          explanation: "Arrays store elements in contiguous memory, so the address of any index can be computed directly.",
+          order: 0,
+        },
+        {
+          nodeId: arraysNode._id, roadmapSlug: "dsa", nodeSlug: "arrays", type: "mcq", difficulty: "easy",
+          prompt: "What is the time complexity of inserting an element at the beginning of an array?",
+          options: ["O(1)", "O(n)", "O(log n)", "O(1) amortized"], correctAnswer: "O(n)",
+          explanation: "Every existing element has to shift one position to make room, which takes linear time.",
+          order: 1,
+        },
+        {
+          nodeId: arraysNode._id, roadmapSlug: "dsa", nodeSlug: "arrays", type: "mcq", difficulty: "medium",
+          prompt: "Which technique finds a pair with a target sum in a sorted array in O(n) time?",
+          options: ["Two pointer", "Binary search per element", "Nested loops", "Hashing only"], correctAnswer: "Two pointer",
+          explanation: "Two pointers starting at both ends move inward based on the current sum vs target, giving a single O(n) pass.",
+          order: 2,
+        },
+        {
+          nodeId: arraysNode._id, roadmapSlug: "dsa", nodeSlug: "arrays", type: "concept", difficulty: "medium",
+          prompt: "In your own words: what problem does the prefix sum technique solve efficiently?",
+          options: [], correctAnswer: "Answering repeated range-sum queries in O(1) after O(n) preprocessing",
+          explanation: "A prefix sum array lets you compute the sum of any subarray in constant time by subtracting two prefix values.",
+          order: 3,
+        },
+      ]);
+      console.log("  ✓ Seeded Arrays practice questions");
     }
   }
 

@@ -82,3 +82,22 @@ export function addResource(input: NewResourceInput, accessToken: string) {
 export function deleteResource(id: string, accessToken: string) {
   return apiFetch<void>(`/admin/resources/${id}`, { method: "DELETE", accessToken });
 }
+
+export type NewPracticeQuestionInput = {
+  roadmapSlug: string;
+  nodeSlug: string;
+  type: "mcq" | "coding" | "concept" | "interview";
+  difficulty: "easy" | "medium" | "hard";
+  prompt: string;
+  options: string[];
+  correctAnswer: string;
+  explanation: string;
+};
+
+export function addPracticeQuestion(input: NewPracticeQuestionInput, accessToken: string) {
+  return apiFetch<{ question: unknown }>("/admin/practice", { method: "POST", body: input, accessToken });
+}
+
+export function deletePracticeQuestion(id: string, accessToken: string) {
+  return apiFetch<void>(`/admin/practice/${id}`, { method: "DELETE", accessToken });
+}

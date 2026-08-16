@@ -5,6 +5,7 @@ import { requireAdmin } from "../../middleware/requireAdmin.js";
 import { validateBody } from "../../middleware/validate.js";
 import * as roadmapsController from "../roadmaps/roadmaps.controller.js";
 import * as resourcesController from "../resources/resources.controller.js";
+import * as practiceController from "../practice/practice.controller.js";
 
 const router = Router();
 
@@ -48,6 +49,17 @@ const resourceSchema = z.object({
   durationMinutes: z.number().positive().optional(),
 });
 
+const practiceQuestionSchema = z.object({
+  roadmapSlug: z.string().min(1),
+  nodeSlug: z.string().min(1),
+  type: z.enum(["mcq", "coding", "concept", "interview"]).default("mcq"),
+  difficulty: z.enum(["easy", "medium", "hard"]).default("easy"),
+  prompt: z.string().min(1),
+  options: z.array(z.string()).default([]),
+  correctAnswer: z.string().min(1),
+  explanation: z.string().default(""),
+});
+
 // Roadmaps
 router.post("/roadmaps", validateBody(roadmapSchema), roadmapsController.createRoadmap);
 router.put("/roadmaps/:slug", validateBody(roadmapUpdateSchema), roadmapsController.updateRoadmap);
@@ -63,5 +75,9 @@ router.patch("/roadmaps/:slug/nodes/:nodeSlug/move", validateBody(moveSchema), r
 // Resources
 router.post("/resources", validateBody(resourceSchema), resourcesController.createResource);
 router.delete("/resources/:id", resourcesController.deleteResource);
+
+// Practice questions
+router.post("/practice", validateBody(practiceQuestionSchema), practiceController.addPracticeQuestion);
+router.delete("/practice/:id", practiceController.deletePracticeQuestion);
 
 export default router;

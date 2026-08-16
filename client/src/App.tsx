@@ -14,6 +14,7 @@ import AdminRoadmapList from "./routes/admin/AdminRoadmapList";
 import AdminRoadmapNew from "./routes/admin/AdminRoadmapNew";
 import AdminRoadmapEditor from "./routes/admin/AdminRoadmapEditor";
 import AdminTopicResources from "./routes/admin/AdminTopicResources";
+import AdminTopicPractice from "./routes/admin/AdminTopicPractice";
 import { useAuthStore } from "./store/authStore";
 import { useAdminStore } from "./store/adminStore";
 
@@ -61,6 +62,7 @@ export default function App() {
           <Route path="roadmaps/new" element={<AdminRoadmapNew />} />
           <Route path="roadmaps/:slug" element={<AdminRoadmapEditor />} />
           <Route path="roadmaps/:roadmapSlug/topics/:nodeSlug" element={<AdminTopicResources />} />
+          <Route path="roadmaps/:roadmapSlug/topics/:nodeSlug/practice" element={<AdminTopicPractice />} />
         </Route>
       </Routes>
     </Shell>

@@ -105,6 +105,12 @@ export default function AdminRoadmapEditor() {
             <Link to={`/admin/roadmaps/${roadmap.slug}/topics/${node.slug}`} className="flex-1 text-sm text-text-primary hover:text-accent">
               {node.title}
             </Link>
+            <Link
+              to={`/admin/roadmaps/${roadmap.slug}/topics/${node.slug}/practice`}
+              className="shrink-0 text-xs text-text-muted hover:text-accent"
+            >
+              Practice
+            </Link>
             <span className="font-mono text-xs text-text-faint">{node.estimatedHours}h</span>
             <div className="flex gap-1">
               <button onClick={() => moveNode(roadmap.slug, node.slug, "up")} disabled={i === 0} className="rounded px-2 py-1 text-xs text-text-muted hover:text-text-primary disabled:opacity-30">↑</button>

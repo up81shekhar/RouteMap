@@ -3,17 +3,8 @@ import { useMemo, useState } from "react";
 import LineDiagram from "../components/roadmap/LineDiagram";
 import RoadmapCard, { RoadmapCardData } from "../components/roadmap/RoadmapCard";
 import AdSlot from "../components/ads/AdSlot";
-import { roadmapsCatalog, RoadmapCategory } from "../data/sampleRoadmaps";
-
-const roadmaps: RoadmapCardData[] = roadmapsCatalog.map((r) => ({
-  slug: r.slug,
-  lineCode: r.lineCode,
-  title: r.title,
-  stops: r.nodes.length,
-  hours: r.estimatedDurationHours,
-  color: r.color,
-  category: r.category,
-}));
+import { RoadmapCategory } from "../data/sampleRoadmaps";
+import { useAdminStore } from "../store/adminStore";
 
 const categories: { key: RoadmapCategory | "all"; label: string }[] = [
   { key: "all", label: "All lines" },
@@ -73,16 +64,36 @@ export default function Home() {
   const [query, setQuery] = useState("");
   const navigate = useNavigate();
   const [activeCategory, setActiveCategory] = useState<RoadmapCategory | "all">("all");
-  
+
   // Added state for the Journey section
   const [activeStop, setActiveStop] = useState(0);
+
+  const adminRoadmaps = useAdminStore((s) => s.roadmaps);
+  const loaded = useAdminStore((s) => s.loaded);
+  const retrying = useAdminStore((s) => s.retrying);
+
+  const roadmaps: RoadmapCardData[] = useMemo(
+    () =>
+      adminRoadmaps
+        .filter((r) => r.isPublished)
+        .map((r) => ({
+          slug: r.slug,
+          lineCode: r.lineCode,
+          title: r.title,
+          stops: r.nodes.length,
+          hours: r.estimatedDurationHours,
+          color: r.color,
+          category: r.category,
+        })),
+    [adminRoadmaps]
+  );
 
   const filteredRoadmaps = useMemo(
     () =>
       activeCategory === "all"
         ? roadmaps
         : roadmaps.filter((r) => r.category === activeCategory),
-    [activeCategory]
+    [activeCategory, roadmaps]
   );
 
   return (
@@ -227,7 +238,11 @@ export default function Home() {
 
           {filteredRoadmaps.length === 0 && (
             <p className="py-16 text-center text-sm text-text-muted">
-              No roadmaps in this category yet.
+              {!loaded || retrying
+                ? retrying
+                  ? "Waking up the server — this can take up to a couple of minutes on a cold start…"
+                  : "Loading roadmaps…"
+                : "No roadmaps in this category yet."}
             </p>
           )}
 

@@ -16,11 +16,36 @@ export default function RoadmapDetail() {
   const { slug } = useParams();
   const roadmap = useAdminStore((s) => s.roadmaps.find((r) => r.slug === slug));
   const loadRoadmapDetail = useAdminStore((s) => s.loadRoadmapDetail);
+  const loaded = useAdminStore((s) => s.loaded);
+  const isOffline = useAdminStore((s) => s.isOffline);
+  const retrying = useAdminStore((s) => s.retrying);
 
   useEffect(() => {
     if (slug) void loadRoadmapDetail(slug);
+    // Re-fetch once the backend comes back — isOffline flipping false means
+    // retryConnection() just recovered and this page's data may still be
+    // the offline placeholder (or, for a roadmap that only exists in the
+    // real database, may not have loaded at all yet).
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [slug]);
+  }, [slug, isOffline]);
+
+  // Still figuring out whether this roadmap exists — either the very first
+  // load hasn't resolved yet, or we're offline and actively retrying (e.g.
+  // a Render free-tier backend waking up can take up to ~2 minutes). Show a
+  // clear "still loading" state instead of a false "not found".
+  if (!roadmap && (!loaded || retrying)) {
+    return (
+      <div className="container-page py-24 text-center">
+        <p className="station-code mb-3">{retrying ? "Waking up the server" : "Loading"}</p>
+        <h1 className="font-display text-2xl">
+          {retrying ? "This can take up to a couple of minutes on a cold start…" : "Loading this roadmap…"}
+        </h1>
+        <p className="mt-3 text-sm text-text-muted">
+          Free hosting spins down when idle. Hang tight — this only happens on the first visit in a while.
+        </p>
+      </div>
+    );
+  }
 
   if (!roadmap) {
     return (

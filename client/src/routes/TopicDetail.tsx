@@ -43,13 +43,18 @@ export default function TopicDetail() {
   const resources = useAdminStore((s) => s.topicResources[topicKey] ?? []);
 
   const isOffline = useAdminStore((s) => s.isOffline);
+  const retrying = useAdminStore((s) => s.retrying);
+  const loaded = useAdminStore((s) => s.loaded);
   const [practiceQuestions, setPracticeQuestions] = useState<ApiPracticeQuestion[]>([]);
 
   useEffect(() => {
     if (roadmapSlug) void loadRoadmapDetail(roadmapSlug);
     if (roadmapSlug && slug) void loadTopicResources(roadmapSlug, slug);
+    // Re-run once the backend recovers from a cold start (isOffline flips
+    // false), so this page picks up real data instead of staying stuck on
+    // whatever the offline placeholder had.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [roadmapSlug, slug]);
+  }, [roadmapSlug, slug, isOffline]);
 
   useEffect(() => {
     if (!roadmapSlug || !slug) return;
@@ -95,6 +100,19 @@ export default function TopicDetail() {
   const viewingResource = resources.find((r) => r.id === viewingResourceId);
 
   if (!roadmap || !node || !staticContent) {
+    if (!loaded || retrying) {
+      return (
+        <div className="container-page py-24 text-center">
+          <p className="station-code mb-3">{retrying ? "Waking up the server" : "Loading"}</p>
+          <h1 className="font-display text-2xl">
+            {retrying ? "This can take up to a couple of minutes on a cold start…" : "Loading this lesson…"}
+          </h1>
+          <p className="mt-3 text-sm text-text-muted">
+            Free hosting spins down when idle. Hang tight — this only happens on the first visit in a while.
+          </p>
+        </div>
+      );
+    }
     return (
       <div className="container-page py-24 text-center">
         <p className="station-code mb-3">Topic not found</p>

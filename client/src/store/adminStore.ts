@@ -159,7 +159,8 @@ export const useAdminStore = create<AdminState>()((set, get) => ({
 
   retryConnection: async () => {
     set({ retrying: true });
-    const delaysMs = [3000, 6000, 10000, 15000, 15000]; // ~49s total — covers a typical cold start
+    // ~2 minutes total, covering slower Render free-tier cold starts.
+    const delaysMs = [3000, 5000, 8000, 10000, 12000, 15000, 18000, 20000, 20000];
     for (const delay of delaysMs) {
       await new Promise((resolve) => setTimeout(resolve, delay));
       if (!get().isOffline) {
@@ -169,13 +170,21 @@ export const useAdminStore = create<AdminState>()((set, get) => ({
 
       try {
         const { roadmaps } = await roadmapsApi.listRoadmaps(useAuthStore.getState().accessToken);
-        set({ roadmaps: roadmaps.map((r) => apiRoadmapToLocal(r, [])), isOffline: false, retrying: false });
-        return; // success — the "Demo mode" badge disappears and real data takes over
+        set((s) => ({
+          roadmaps: roadmaps.map((r) => {
+            // Preserve any full node detail a page already fetched before we went offline.
+            const existing = s.roadmaps.find((prev) => prev.slug === r.slug);
+            return apiRoadmapToLocal(r, existing?.nodes ?? []);
+          }),
+          isOffline: false,
+          retrying: false,
+        }));
+        return; // success — "Demo mode" disappears, and pages watching `isOffline` re-fetch their detail
       } catch {
         // still down — wait for the next delay and try again
       }
     }
-    set({ retrying: false }); // gave up — stays in demo mode until next page load
+    set({ retrying: false }); // gave up after ~2 minutes — stays in demo mode until next page load
   },
 
   loadRoadmapDetail: async (slug) => {

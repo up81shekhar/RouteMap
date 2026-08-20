@@ -5,9 +5,8 @@ const columns = [
     title: "Learn",
     links: [
       { to: "/roadmaps", label: "Roadmaps" },
-      { to: "/topics", label: "Topics" },
-      { to: "/practice", label: "Practice" },
-      { to: "/placements", label: "Placements" },
+      { to: "/roadmaps?category=exam", label: "Practice" },
+      { to: "/roadmaps/placement-prep", label: "Placements" },
     ],
   },
   {
@@ -15,7 +14,6 @@ const columns = [
     links: [
       { to: "/about", label: "About" },
       { to: "/contact", label: "Contact" },
-      { to: "/careers", label: "Careers" },
     ],
   },
   {

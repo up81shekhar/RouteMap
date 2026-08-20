@@ -5,9 +5,8 @@ import { useAdminStore } from "../../store/adminStore";
 
 const links = [
   { to: "/roadmaps", label: "Roadmaps" },
-  { to: "/topics", label: "Topics" },
-  { to: "/practice", label: "Practice" },
-  { to: "/placements", label: "Placements" },
+  { to: "/roadmaps?category=exam", label: "Practice" },
+  { to: "/roadmaps/placement-prep", label: "Placements" },
 ];
 
 export default function Nav() {

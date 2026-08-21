@@ -10,6 +10,7 @@ import * as practiceApi from "../api/practice";
 import { ApiPracticeQuestion } from "../api/practice";
 import { useDocumentMeta } from "../hooks/useDocumentMeta";
 import { useJsonLd } from "../hooks/useJsonLd";
+import { trackEvent } from "../lib/analytics";
 
 // Local fallback so the flagship Arrays example still has practice questions
 // in offline/demo mode, consistent with how its resources also fall back.
@@ -123,6 +124,19 @@ export default function TopicDetail() {
   );
   const otherResources = resources.filter((r) => r.id !== primaryResource?.id);
   const viewingResource = resources.find((r) => r.id === viewingResourceId);
+  const activeVideoIdForTracking = viewingResource?.videoId ?? currentLesson?.videoId ?? primaryResource?.videoId;
+
+  useEffect(() => {
+    if (roadmap && node) trackEvent("topic_opened", { roadmap_slug: roadmap.slug, topic_slug: node.slug, topic_title: node.title });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [roadmap?.slug, node?.slug]);
+
+  useEffect(() => {
+    if (roadmap && node && activeVideoIdForTracking) {
+      trackEvent("video_started", { roadmap_slug: roadmap.slug, topic_slug: node.slug, video_id: activeVideoIdForTracking });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeVideoIdForTracking]);
 
   if (!roadmap || !node || !staticContent) {
     if (!loaded || retrying) {
@@ -154,6 +168,12 @@ export default function TopicDetail() {
 
   function handleMarkComplete() {
     markComplete(progressKey, currentIndex);
+    trackEvent("lesson_completed", {
+      roadmap_slug: roadmap!.slug,
+      topic_slug: node!.slug,
+      lesson_index: currentIndex,
+      lesson_title: currentLesson?.title,
+    });
     setViewingResourceId(null);
     if (!isLastLesson) setCurrentIndex((i) => i + 1);
   }
@@ -298,7 +318,7 @@ export default function TopicDetail() {
           {practiceQuestions.length > 0 && (
             <div className="mt-10">
               <p className="station-code mb-3">Practice</p>
-              <PracticeQuiz questions={practiceQuestions} />
+              <PracticeQuiz questions={practiceQuestions} context={{ roadmapSlug: roadmap.slug, nodeSlug: node.slug }} />
             </div>
           )}
         </div>

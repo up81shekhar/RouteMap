@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useLocation } from "react-router-dom";
 import Shell from "./components/layout/Shell";
 import Home from "./routes/Home";
 import Roadmaps from "./routes/Roadmaps";
@@ -24,15 +24,26 @@ import AdminTopicResources from "./routes/admin/AdminTopicResources";
 import AdminTopicPractice from "./routes/admin/AdminTopicPractice";
 import { useAuthStore } from "./store/authStore";
 import { useAdminStore } from "./store/adminStore";
+import { initAnalytics, trackPageview } from "./lib/analytics";
 
 export default function App() {
+  const location = useLocation();
+
   useEffect(() => {
     // Try to restore a session from the refresh cookie, then load the
     // roadmap catalog — both fall back to local demo data automatically
     // if the API isn't reachable (see authStore/adminStore).
     void useAuthStore.getState().hydrate();
     void useAdminStore.getState().loadRoadmaps();
+    initAnalytics();
   }, []);
+
+  useEffect(() => {
+    // GA4 doesn't know about client-side navigation on its own — fire a
+    // pageview manually whenever the route changes. No-ops until
+    // VITE_GA_MEASUREMENT_ID is configured (see lib/analytics.ts).
+    trackPageview(location.pathname + location.search, document.title);
+  }, [location.pathname, location.search]);
 
   return (
     <Shell>

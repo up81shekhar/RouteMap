@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ApiPracticeQuestion } from "../../api/practice";
+import { trackEvent } from "../../lib/analytics";
 
 const difficultyColor: Record<string, string> = {
   easy: "text-success",
@@ -7,12 +8,25 @@ const difficultyColor: Record<string, string> = {
   hard: "text-line-coral",
 };
 
-export default function PracticeQuiz({ questions }: { questions: ApiPracticeQuestion[] }) {
+type Props = {
+  questions: ApiPracticeQuestion[];
+  /** Optional context so practice_started/practice_completed events carry which topic they belong to. */
+  context?: { roadmapSlug: string; nodeSlug: string };
+};
+
+export default function PracticeQuiz({ questions, context }: Props) {
   const [index, setIndex] = useState(0);
   const [selected, setSelected] = useState<string | null>(null);
   const [revealed, setRevealed] = useState(false);
   const [score, setScore] = useState(0);
   const [finished, setFinished] = useState(false);
+
+  useEffect(() => {
+    if (questions.length > 0) {
+      trackEvent("practice_started", { roadmap_slug: context?.roadmapSlug, topic_slug: context?.nodeSlug, question_count: questions.length });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [context?.roadmapSlug, context?.nodeSlug, questions.length]);
 
   if (questions.length === 0) return null;
 
@@ -33,6 +47,12 @@ export default function PracticeQuiz({ questions }: { questions: ApiPracticeQues
       setRevealed(false);
     } else {
       setFinished(true);
+      trackEvent("practice_completed", {
+        roadmap_slug: context?.roadmapSlug,
+        topic_slug: context?.nodeSlug,
+        score,
+        total: questions.length,
+      });
     }
   }
 

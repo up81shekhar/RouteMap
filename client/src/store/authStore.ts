@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import * as authApi from "../api/auth";
 import { ApiUnreachableError, ApiError } from "../api/client";
+import { trackEvent } from "../lib/analytics";
 
 type Role = "student" | "admin";
 type User = { name: string; email: string; role: Role };
@@ -42,6 +43,7 @@ export const useAuthStore = create<AuthState>()(
           const { accessToken } = await authApi.signup(name, email, password);
           const user = await fetchMe(accessToken);
           set({ user, accessToken, isOffline: false, status: "idle" });
+          trackEvent("signup", { method: "email" });
         } catch (err) {
           if (err instanceof ApiUnreachableError) {
             // Backend not running — fall back to a local-only demo session so the

@@ -7,6 +7,7 @@ import { ApiUnreachableError } from "../api/client";
 import { localSearch, LocalTopicMatch } from "../utils/search";
 import { ApiRoadmap } from "../api/roadmaps";
 import { useDocumentMeta } from "../hooks/useDocumentMeta";
+import { trackEvent } from "../lib/analytics";
 
 const colorHex: Record<string, string> = { coral: "#FF6B4A", teal: "#2FBF9E", violet: "#9B8CFB", amber: "#F0B429" };
 
@@ -35,6 +36,8 @@ export default function Search() {
       setRemoteTopics(null);
       return;
     }
+
+    trackEvent("search", { query: q });
 
     function fallbackToLocal() {
       const { roadmaps, topics } = localSearch(q, adminRoadmaps);

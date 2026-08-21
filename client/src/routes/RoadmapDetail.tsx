@@ -6,6 +6,7 @@ import { LineColor } from "../data/sampleRoadmaps";
 import { useAdminStore } from "../store/adminStore";
 import { useDocumentMeta, SITE_URL } from "../hooks/useDocumentMeta";
 import { useJsonLd } from "../hooks/useJsonLd";
+import { trackEvent } from "../lib/analytics";
 
 const colorHex: Record<LineColor, string> = {
   coral: "#FF6B4A",
@@ -58,6 +59,11 @@ export default function RoadmapDetail() {
         }
       : null
   );
+
+  useEffect(() => {
+    if (roadmap) trackEvent("roadmap_view", { roadmap_slug: roadmap.slug, roadmap_title: roadmap.title });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [roadmap?.slug]);
 
   // Still figuring out whether this roadmap exists — either the very first
   // load hasn't resolved yet, or we're offline and actively retrying (e.g.
@@ -151,6 +157,7 @@ export default function RoadmapDetail() {
           {firstAvailableNode && (
             <Link
               to={`/roadmaps/${roadmap.slug}/${firstAvailableNode.slug}`}
+              onClick={() => trackEvent("roadmap_started", { roadmap_slug: roadmap.slug })}
               className="mt-6 inline-block w-full rounded bg-accent px-4 py-2.5 text-center text-sm font-medium text-white hover:bg-accent-hover"
             >
               Continue: {firstAvailableNode.title} →

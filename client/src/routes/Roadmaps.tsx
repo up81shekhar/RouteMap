@@ -4,6 +4,7 @@ import RoadmapCard, { RoadmapCardData } from "../components/roadmap/RoadmapCard"
 import AdSlot from "../components/ads/AdSlot";
 import { RoadmapCategory } from "../data/sampleRoadmaps";
 import { useAdminStore } from "../store/adminStore";
+import { useDocumentMeta } from "../hooks/useDocumentMeta";
 
 const categories: { key: RoadmapCategory | "all"; label: string }[] = [
   { key: "all", label: "All lines" },
@@ -16,6 +17,12 @@ const categories: { key: RoadmapCategory | "all"; label: string }[] = [
 const validCategories = new Set(categories.map((c) => c.key));
 
 export default function Roadmaps() {
+  useDocumentMeta({
+    title: "All Roadmaps",
+    description: "Every free structured learning roadmap on LearnPath — DSA, Full Stack, Python, exam prep, school subjects, and more.",
+    path: "/roadmaps",
+  });
+
   const adminRoadmaps = useAdminStore((s) => s.roadmaps);
   const loaded = useAdminStore((s) => s.loaded);
   const retrying = useAdminStore((s) => s.retrying);

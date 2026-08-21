@@ -1,10 +1,13 @@
 import { NavLink, Outlet } from "react-router-dom";
+import { useDocumentMeta } from "../../hooks/useDocumentMeta";
 
 const sections = [
   { to: "/admin", label: "Roadmaps", end: true },
 ];
 
 export default function AdminLayout() {
+  useDocumentMeta({ title: "Admin", noindex: true, path: "/admin" });
+
   return (
     <div className="container-page grid gap-10 py-10 lg:grid-cols-[200px_1fr]">
       <aside>

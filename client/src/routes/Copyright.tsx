@@ -1,6 +1,9 @@
 import StaticPage from "../components/legal/StaticPage";
+import { useDocumentMeta } from "../hooks/useDocumentMeta";
 
 export default function Copyright() {
+  useDocumentMeta({ title: "Copyright Policy", description: "How LearnPath handles third-party content — metadata only, official embeds, always credited, never re-hosted.", path: "/copyright" });
+
   return (
     <StaticPage eyebrow="Legal" title="Copyright Policy">
       <p>

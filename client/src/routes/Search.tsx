@@ -6,12 +6,20 @@ import * as searchApi from "../api/search";
 import { ApiUnreachableError } from "../api/client";
 import { localSearch, LocalTopicMatch } from "../utils/search";
 import { ApiRoadmap } from "../api/roadmaps";
+import { useDocumentMeta } from "../hooks/useDocumentMeta";
 
 const colorHex: Record<string, string> = { coral: "#FF6B4A", teal: "#2FBF9E", violet: "#9B8CFB", amber: "#F0B429" };
 
 export default function Search() {
   const [params, setParams] = useSearchParams();
   const q = params.get("q") ?? "";
+
+  useDocumentMeta({
+    title: q ? `Search: ${q}` : "Search",
+    description: q ? `Search results for "${q}" on LearnPath.` : "Search LearnPath's free roadmaps and topics.",
+    path: q ? `/search?q=${encodeURIComponent(q)}` : "/search",
+    noindex: true, // query-driven results page — not useful as an indexed landing page
+  });
   const [input, setInput] = useState(q);
   const [status, setStatus] = useState<"idle" | "loading">("idle");
   const [remoteRoadmaps, setRemoteRoadmaps] = useState<ApiRoadmap[] | null>(null);

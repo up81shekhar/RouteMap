@@ -1,6 +1,9 @@
 import { Link } from "react-router-dom";
+import { useDocumentMeta } from "../hooks/useDocumentMeta";
 
 export default function NotFound() {
+  useDocumentMeta({ title: "Page Not Found", noindex: true, path: typeof window !== "undefined" ? window.location.pathname : "/404" });
+
   return (
     <div className="container-page py-24 text-center">
       <p className="station-code mb-3">404</p>

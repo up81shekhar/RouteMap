@@ -1,6 +1,9 @@
 import StaticPage from "../components/legal/StaticPage";
+import { useDocumentMeta } from "../hooks/useDocumentMeta";
 
 export default function Terms() {
+  useDocumentMeta({ title: "Terms of Service", description: "The terms governing use of LearnPath's free learning roadmaps and account features.", path: "/terms" });
+
   return (
     <StaticPage eyebrow="Legal" title="Terms of Service">
       <p>Last updated: {new Date().getFullYear()}</p>

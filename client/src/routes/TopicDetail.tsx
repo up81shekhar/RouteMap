@@ -8,6 +8,8 @@ import { useProgressStore } from "../store/progressStore";
 import { useAdminStore } from "../store/adminStore";
 import * as practiceApi from "../api/practice";
 import { ApiPracticeQuestion } from "../api/practice";
+import { useDocumentMeta } from "../hooks/useDocumentMeta";
+import { useJsonLd } from "../hooks/useJsonLd";
 
 // Local fallback so the flagship Arrays example still has practice questions
 // in offline/demo mode, consistent with how its resources also fall back.
@@ -73,6 +75,29 @@ export default function TopicDetail() {
     [roadmapSlug, slug, node]
   );
   const lessons = useMemo(() => staticContent?.lessons ?? [], [staticContent]);
+
+  useDocumentMeta({
+    title: node && roadmap ? `${node.title} — ${roadmap.title}` : "Lesson",
+    description:
+      node && roadmap
+        ? `Learn ${node.title} as part of the free ${roadmap.title} roadmap on LearnPath — curated videos, articles, and practice, all free.`
+        : undefined,
+    path: `/roadmaps/${roadmapSlug}/${slug}`,
+  });
+
+  useJsonLd(
+    node && roadmap
+      ? {
+          "@context": "https://schema.org",
+          "@type": "LearningResource",
+          name: node.title,
+          description: `${node.title} — part of the ${roadmap.title} roadmap`,
+          isPartOf: { "@type": "Course", name: roadmap.title },
+          isAccessibleForFree: true,
+          learningResourceType: "lesson",
+        }
+      : null
+  );
 
   const progressKey = topicKey;
   const completedArr = useProgressStore((s) => s.getCompleted(progressKey));

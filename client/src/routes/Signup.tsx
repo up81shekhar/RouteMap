@@ -1,8 +1,10 @@
 import { FormEvent, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuthStore } from "../store/authStore";
+import { useDocumentMeta } from "../hooks/useDocumentMeta";
 
 export default function Signup() {
+  useDocumentMeta({ title: "Sign Up", noindex: true, path: "/signup" });
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

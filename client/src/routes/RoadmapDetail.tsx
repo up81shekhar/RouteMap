@@ -4,6 +4,8 @@ import SkillTree from "../components/roadmap/SkillTree";
 import AdSlot from "../components/ads/AdSlot";
 import { LineColor } from "../data/sampleRoadmaps";
 import { useAdminStore } from "../store/adminStore";
+import { useDocumentMeta, SITE_URL } from "../hooks/useDocumentMeta";
+import { useJsonLd } from "../hooks/useJsonLd";
 
 const colorHex: Record<LineColor, string> = {
   coral: "#FF6B4A",
@@ -28,6 +30,34 @@ export default function RoadmapDetail() {
     // real database, may not have loaded at all yet).
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [slug, isOffline]);
+
+  useDocumentMeta({
+    title: roadmap ? roadmap.title : "Roadmap",
+    description: roadmap
+      ? `${roadmap.description} A free, structured ${roadmap.title} roadmap — ${roadmap.nodes.length} stations, ~${roadmap.estimatedDurationHours} hours, curated free resources at every step.`
+      : undefined,
+    path: `/roadmaps/${slug}`,
+  });
+
+  useJsonLd(
+    roadmap
+      ? {
+          "@context": "https://schema.org",
+          "@type": "Course",
+          name: roadmap.title,
+          description: roadmap.description,
+          provider: { "@type": "Organization", name: "LearnPath", sameAs: SITE_URL },
+          url: `${SITE_URL}/roadmaps/${roadmap.slug}`,
+          isAccessibleForFree: true,
+          educationalLevel: roadmap.difficulty,
+          hasCourseInstance: {
+            "@type": "CourseInstance",
+            courseMode: "online",
+            courseWorkload: `PT${roadmap.estimatedDurationHours}H`,
+          },
+        }
+      : null
+  );
 
   // Still figuring out whether this roadmap exists — either the very first
   // load hasn't resolved yet, or we're offline and actively retrying (e.g.

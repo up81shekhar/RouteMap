@@ -3,10 +3,13 @@ import { useAuthStore } from "../store/authStore";
 import { useProgressStore } from "../store/progressStore";
 import { useAdminStore } from "../store/adminStore";
 import AdSlot from "../components/ads/AdSlot";
+import { useDocumentMeta } from "../hooks/useDocumentMeta";
 
 const colorHex: Record<string, string> = { coral: "#FF6B4A", teal: "#2FBF9E", violet: "#9B8CFB", amber: "#F0B429" };
 
 export default function Dashboard() {
+  useDocumentMeta({ title: "Dashboard", noindex: true, path: "/dashboard" });
+
   const user = useAuthStore((s) => s.user);
   const arraysCompleted = useProgressStore((s) => s.getCompleted("dsa/arrays"));
   const roadmaps = useAdminStore((s) => s.roadmaps);

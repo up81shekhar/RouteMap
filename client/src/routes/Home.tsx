@@ -5,6 +5,7 @@ import RoadmapCard, { RoadmapCardData } from "../components/roadmap/RoadmapCard"
 import AdSlot from "../components/ads/AdSlot";
 import { RoadmapCategory } from "../data/sampleRoadmaps";
 import { useAdminStore } from "../store/adminStore";
+import { useDocumentMeta } from "../hooks/useDocumentMeta";
 
 const categories: { key: RoadmapCategory | "all"; label: string }[] = [
   { key: "all", label: "All lines" },
@@ -61,6 +62,13 @@ const journeySteps = [
 ];
 
 export default function Home() {
+  useDocumentMeta({
+    title: "LearnPath",
+    description:
+      "Free educational content is everywhere. LearnPath charts it into a clear route, station by station, so you always know the next stop. Roadmaps for DSA, Full Stack, exam prep, and more — all free.",
+    path: "/",
+  });
+
   const [query, setQuery] = useState("");
   const navigate = useNavigate();
   const [activeCategory, setActiveCategory] = useState<RoadmapCategory | "all">("all");

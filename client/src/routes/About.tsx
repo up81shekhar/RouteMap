@@ -1,6 +1,13 @@
 import StaticPage from "../components/legal/StaticPage";
+import { useDocumentMeta } from "../hooks/useDocumentMeta";
 
 export default function About() {
+  useDocumentMeta({
+    title: "About",
+    description: "LearnPath organizes free educational content — YouTube videos, articles, and practice — into structured, sequenced learning roadmaps.",
+    path: "/about",
+  });
+
   return (
     <StaticPage eyebrow="About" title="What LearnPath is">
       <p>

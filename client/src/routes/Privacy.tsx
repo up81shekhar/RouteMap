@@ -1,6 +1,9 @@
 import StaticPage from "../components/legal/StaticPage";
+import { useDocumentMeta } from "../hooks/useDocumentMeta";
 
 export default function Privacy() {
+  useDocumentMeta({ title: "Privacy Policy", description: "How LearnPath handles your data, cookies, and third-party services like Google AdSense and YouTube.", path: "/privacy" });
+
   return (
     <StaticPage eyebrow="Legal" title="Privacy Policy">
       <p>Last updated: {new Date().getFullYear()}</p>

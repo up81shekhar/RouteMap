@@ -10,7 +10,7 @@ const API_BASE =
  *  distinct from a real API error response, so callers can fall back to local/offline mode. */
 export class ApiUnreachableError extends Error {
   constructor() {
-    super("Could not reach the LearnPath API");
+    super("Could not reach the RouteMap API");
     this.name = "ApiUnreachableError";
   }
 }

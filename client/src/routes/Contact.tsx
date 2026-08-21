@@ -2,7 +2,7 @@ import StaticPage from "../components/legal/StaticPage";
 import { useDocumentMeta } from "../hooks/useDocumentMeta";
 
 export default function Contact() {
-  useDocumentMeta({ title: "Contact", description: "Get in touch with LearnPath — report a broken link, suggest a roadmap, or flag a resource.", path: "/contact" });
+  useDocumentMeta({ title: "Contact", description: "Get in touch with RouteMap — report a broken link, suggest a roadmap, or flag a resource.", path: "/contact" });
 
   return (
     <StaticPage eyebrow="Get in touch" title="Contact">

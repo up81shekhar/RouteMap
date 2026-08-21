@@ -305,7 +305,7 @@ export const curatedTopics: Record<string, TopicDetailData> = {
       { id: "r3", type: "video", tag: "alternative", title: "Arrays deep dive with visualizations", source: "CS Dojo", language: "English", durationMinutes: 35, videoId: "rL8X2mlNHPM" },
       { id: "r4", type: "video", tag: "quick", title: "Arrays in 10 minutes — revision", source: "Take U Forward", language: "Hinglish", durationMinutes: 11, videoId: "rL8X2mlNHPM" },
       { id: "r5", type: "article", tag: "deep_dive", title: "Array data structure — full reference", source: "GeeksforGeeks", language: "English" },
-      { id: "r6", type: "practice", tag: "recommended", title: "20 array practice problems (Easy → Hard)", source: "LearnPath Practice", language: "English" },
+      { id: "r6", type: "practice", tag: "recommended", title: "20 array practice problems (Easy → Hard)", source: "RouteMap Practice", language: "English" },
     ],
   },
 };

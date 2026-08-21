@@ -17,7 +17,7 @@ export default function Search() {
 
   useDocumentMeta({
     title: q ? `Search: ${q}` : "Search",
-    description: q ? `Search results for "${q}" on LearnPath.` : "Search LearnPath's free roadmaps and topics.",
+    description: q ? `Search results for "${q}" on RouteMap.` : "Search RouteMap's free roadmaps and topics.",
     path: q ? `/search?q=${encodeURIComponent(q)}` : "/search",
     noindex: true, // query-driven results page — not useful as an indexed landing page
   });

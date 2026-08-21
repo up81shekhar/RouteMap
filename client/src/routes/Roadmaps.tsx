@@ -19,7 +19,7 @@ const validCategories = new Set(categories.map((c) => c.key));
 export default function Roadmaps() {
   useDocumentMeta({
     title: "All Roadmaps",
-    description: "Every free structured learning roadmap on LearnPath — DSA, Full Stack, Python, exam prep, school subjects, and more.",
+    description: "Every free structured learning roadmap on RouteMap — DSA, Full Stack, Python, exam prep, school subjects, and more.",
     path: "/roadmaps",
   });
 

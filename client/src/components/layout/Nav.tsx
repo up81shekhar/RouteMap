@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useAuthStore } from "../../store/authStore";
 import { useAdminStore } from "../../store/adminStore";
+import LogoMark from "../brand/LogoMark";
 
 const links = [
   { to: "/roadmaps", label: "Roadmaps" },
@@ -26,11 +27,9 @@ export default function Nav() {
     <header className="sticky top-0 z-40 border-b border-border bg-ink/90 backdrop-blur">
       <div className="container-page flex h-16 items-center justify-between gap-6">
         <Link to="/" className="flex items-center gap-2 shrink-0">
-          <span className="flex h-7 w-7 items-center justify-center rounded bg-accent font-display text-sm font-semibold text-white">
-            L
-          </span>
+          <LogoMark size={28} className="rounded-md" />
           <span className="font-display text-lg font-semibold tracking-tight">
-            LearnPath
+            RouteMap
           </span>
           {isOffline && (
             <span

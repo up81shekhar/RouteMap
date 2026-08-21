@@ -63,9 +63,9 @@ const journeySteps = [
 
 export default function Home() {
   useDocumentMeta({
-    title: "LearnPath",
+    title: "RouteMap",
     description:
-      "Free educational content is everywhere. LearnPath charts it into a clear route, station by station, so you always know the next stop. Roadmaps for DSA, Full Stack, exam prep, and more — all free.",
+      "Free educational content is everywhere. RouteMap charts it into a clear route, station by station, so you always know the next stop. Roadmaps for DSA, Full Stack, exam prep, and more — all free.",
     path: "/",
   });
 

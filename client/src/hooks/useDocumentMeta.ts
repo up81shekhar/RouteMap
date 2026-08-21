@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 
 export const SITE_URL = "https://routemap-free.vercel.app";
-export const SITE_NAME = "LearnPath";
+export const SITE_NAME = "RouteMap";
 
 function setMetaTag(attr: "name" | "property", key: string, content: string) {
   let el = document.querySelector<HTMLMetaElement>(`meta[${attr}="${key}"]`);

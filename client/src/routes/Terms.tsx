@@ -2,7 +2,7 @@ import StaticPage from "../components/legal/StaticPage";
 import { useDocumentMeta } from "../hooks/useDocumentMeta";
 
 export default function Terms() {
-  useDocumentMeta({ title: "Terms of Service", description: "The terms governing use of LearnPath's free learning roadmaps and account features.", path: "/terms" });
+  useDocumentMeta({ title: "Terms of Service", description: "The terms governing use of RouteMap's free learning roadmaps and account features.", path: "/terms" });
 
   return (
     <StaticPage eyebrow="Legal" title="Terms of Service">
@@ -10,7 +10,7 @@ export default function Terms() {
 
       <h2>What this site is</h2>
       <p>
-        LearnPath organizes existing free educational resources — primarily YouTube videos, plus
+        RouteMap organizes existing free educational resources — primarily YouTube videos, plus
         articles and practice material — into structured roadmaps. We don't host or own the
         underlying course content; see our <a href="/copyright">copyright policy</a> for how
         third-party content is handled.

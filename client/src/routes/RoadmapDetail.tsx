@@ -47,7 +47,7 @@ export default function RoadmapDetail() {
           "@type": "Course",
           name: roadmap.title,
           description: roadmap.description,
-          provider: { "@type": "Organization", name: "LearnPath", sameAs: SITE_URL },
+          provider: { "@type": "Organization", name: "RouteMap", sameAs: SITE_URL },
           url: `${SITE_URL}/roadmaps/${roadmap.slug}`,
           isAccessibleForFree: true,
           educationalLevel: roadmap.difficulty,

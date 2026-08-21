@@ -81,7 +81,7 @@ export default function TopicDetail() {
     title: node && roadmap ? `${node.title} — ${roadmap.title}` : "Lesson",
     description:
       node && roadmap
-        ? `Learn ${node.title} as part of the free ${roadmap.title} roadmap on LearnPath — curated videos, articles, and practice, all free.`
+        ? `Learn ${node.title} as part of the free ${roadmap.title} roadmap on RouteMap — curated videos, articles, and practice, all free.`
         : undefined,
     path: `/roadmaps/${roadmapSlug}/${slug}`,
   });

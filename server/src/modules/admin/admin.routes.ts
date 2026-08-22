@@ -47,6 +47,7 @@ const resourceSchema = z.object({
   url: z.string().url().optional(),
   videoId: z.string().optional(),
   durationMinutes: z.number().positive().optional(),
+  lessonIndex: z.number().int().min(0).optional(),
 });
 
 const practiceQuestionSchema = z.object({

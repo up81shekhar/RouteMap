@@ -73,6 +73,7 @@ export type NewResourceInput = {
   videoId?: string;
   url?: string;
   durationMinutes?: number;
+  lessonIndex?: number;
 };
 
 export function addResource(input: NewResourceInput, accessToken: string) {

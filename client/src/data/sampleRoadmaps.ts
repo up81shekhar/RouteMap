@@ -254,6 +254,7 @@ export type ResourceData = {
   language: "English" | "Hindi" | "Hinglish";
   durationMinutes?: number;
   videoId?: string; // present for playable video resources — metadata only, no bytes stored
+  lessonIndex?: number; // ties this resource to one specific lesson step; omitted = whole-topic fallback
 };
 
 export type LessonStep = { title: string; videoId?: string };

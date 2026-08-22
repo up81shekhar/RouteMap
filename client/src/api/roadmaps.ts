@@ -36,6 +36,7 @@ export type ApiResource = {
   videoId?: string;
   url?: string;
   durationMinutes?: number;
+  lessonIndex?: number;
 };
 
 export function listRoadmaps(accessToken?: string | null) {

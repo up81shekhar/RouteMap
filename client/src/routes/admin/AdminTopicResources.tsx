@@ -1,7 +1,7 @@
 import { FormEvent, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useAdminStore } from "../../store/adminStore";
-import { ResourceTag, ResourceType } from "../../data/sampleRoadmaps";
+import { ResourceTag, ResourceType, getStaticTopicContent } from "../../data/sampleRoadmaps";
 
 export default function AdminTopicResources() {
   const { roadmapSlug, nodeSlug } = useParams();
@@ -21,7 +21,12 @@ export default function AdminTopicResources() {
   const [language, setLanguage] = useState<"English" | "Hindi" | "Hinglish">("English");
   const [videoId, setVideoId] = useState("");
   const [durationMinutes, setDurationMinutes] = useState<number | "">("");
+  const [lessonIndex, setLessonIndex] = useState<number | "">("");
   const [submitting, setSubmitting] = useState(false);
+
+  const lessons = roadmapSlug && nodeSlug && node
+    ? getStaticTopicContent(roadmapSlug, nodeSlug, node.title).lessons
+    : [];
 
   useEffect(() => {
     if (roadmapSlug) void loadRoadmapDetail(roadmapSlug);
@@ -51,11 +56,13 @@ export default function AdminTopicResources() {
         language,
         videoId: type === "video" ? videoId.trim() || undefined : undefined,
         durationMinutes: durationMinutes === "" ? undefined : durationMinutes,
+        lessonIndex: type === "video" && lessonIndex !== "" ? lessonIndex : undefined,
       });
       setTitle("");
       setSource("");
       setVideoId("");
       setDurationMinutes("");
+      setLessonIndex("");
     } finally {
       setSubmitting(false);
     }
@@ -74,6 +81,11 @@ export default function AdminTopicResources() {
           <li key={r.id} className="flex items-center gap-3 rounded-card border border-border bg-surface px-4 py-3">
             <span className="font-mono text-[10px] uppercase text-accent w-24 shrink-0">{r.tag}</span>
             <span className="flex-1 truncate text-sm text-text-primary">{r.title}</span>
+            {typeof r.lessonIndex === "number" && (
+              <span className="rounded bg-ink px-2 py-0.5 text-[10px] text-text-muted shrink-0">
+                {lessons[r.lessonIndex]?.title ?? `Step ${r.lessonIndex + 1}`}
+              </span>
+            )}
             <span className="text-xs text-text-muted">{r.source} · {r.language}</span>
             <button onClick={() => deleteResource(key, r.id)} className="text-xs text-danger hover:opacity-80">Remove</button>
           </li>
@@ -123,6 +135,18 @@ export default function AdminTopicResources() {
               placeholder="Duration (minutes)"
               className={inputCls}
             />
+            <select
+              value={lessonIndex}
+              onChange={(e) => setLessonIndex(e.target.value === "" ? "" : Number(e.target.value))}
+              className={`${inputCls} col-span-2`}
+            >
+              <option value="">Applies to whole topic (fallback / "More resources")</option>
+              {lessons.map((lesson, i) => (
+                <option key={lesson.title} value={i}>
+                  Only for lesson: {String(i + 1).padStart(2, "0")} {lesson.title}
+                </option>
+              ))}
+            </select>
           </div>
         )}
         <button type="submit" disabled={submitting} className="rounded bg-accent px-4 py-2 text-sm font-medium text-white hover:bg-accent-hover disabled:opacity-60">

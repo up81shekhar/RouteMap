@@ -17,6 +17,11 @@ const resourceSchema = new Schema(
     durationMinutes: { type: Number },
     order: { type: Number, default: 0 },
     isPublished: { type: Boolean, default: true },
+    // Optional: ties this resource to one specific lesson step (0-based index
+    // into that topic's lesson list, e.g. 0 = "Introduction", 1 = "Core concept").
+    // Undefined/omitted = applies to the whole topic (old behaviour, used as
+    // the fallback video for any lesson step that has none of its own).
+    lessonIndex: { type: Number, min: 0 },
   },
   { timestamps: true }
 );

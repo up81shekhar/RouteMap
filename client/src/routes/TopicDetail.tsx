@@ -118,13 +118,22 @@ export default function TopicDetail() {
   const currentLesson = lessons[currentIndex];
   const maxUnlockedIndex = Math.min(completedArr.length, Math.max(lessons.length - 1, 0));
 
+  // Whole-topic fallback video (no lessonIndex set) — used when the current
+  // lesson step has no video of its own.
   const primaryResource = useMemo(
-    () => resources.find((r) => r.tag === "recommended" && r.type === "video"),
+    () => resources.find((r) => r.tag === "recommended" && r.type === "video" && r.lessonIndex == null),
     [resources]
   );
-  const otherResources = resources.filter((r) => r.id !== primaryResource?.id);
+  // A video specifically curated for the lesson step currently selected in
+  // the sidebar — this takes priority so each step can show its own video.
+  const lessonResource = useMemo(
+    () => resources.find((r) => r.type === "video" && r.lessonIndex === currentIndex),
+    [resources, currentIndex]
+  );
+  const otherResources = resources.filter((r) => r.id !== primaryResource?.id && r.id !== lessonResource?.id);
   const viewingResource = resources.find((r) => r.id === viewingResourceId);
-  const activeVideoIdForTracking = viewingResource?.videoId ?? currentLesson?.videoId ?? primaryResource?.videoId;
+  const activeVideoIdForTracking =
+    viewingResource?.videoId ?? lessonResource?.videoId ?? currentLesson?.videoId ?? primaryResource?.videoId;
 
   useEffect(() => {
     if (roadmap && node) trackEvent("topic_opened", { roadmap_slug: roadmap.slug, topic_slug: node.slug, topic_title: node.title });
@@ -185,7 +194,8 @@ export default function TopicDetail() {
     }
   }
 
-  const activeVideoId = viewingResource?.videoId ?? currentLesson?.videoId ?? primaryResource?.videoId;
+  const activeVideoId =
+    viewingResource?.videoId ?? lessonResource?.videoId ?? currentLesson?.videoId ?? primaryResource?.videoId;
   const progressPercent = lessons.length ? Math.round((completedArr.length / lessons.length) * 100) : 0;
 
   return (

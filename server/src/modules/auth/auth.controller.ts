@@ -55,3 +55,17 @@ export const meHandler = asyncHandler(async (req: Request, res: Response) => {
   if (!user) throw new ApiError(404, "User not found");
   res.json({ user });
 });
+
+export const forgotPasswordHandler = asyncHandler(async (req: Request, res: Response) => {
+  const { email } = req.body;
+  await authService.requestPasswordReset(email);
+  // Always the same response, whether or not the email has an account —
+  // otherwise this endpoint could be used to enumerate registered emails.
+  res.json({ message: "If an account exists for that email, a reset link has been sent." });
+});
+
+export const resetPasswordHandler = asyncHandler(async (req: Request, res: Response) => {
+  const { token, newPassword } = req.body;
+  await authService.resetPassword(token, newPassword);
+  res.json({ message: "Password updated. You can now log in." });
+});

@@ -26,3 +26,11 @@ export function logout() {
 export function me(accessToken: string) {
   return apiFetch<{ user: ApiUser }>("/auth/me", { accessToken });
 }
+
+export function forgotPassword(email: string) {
+  return apiFetch<{ message: string }>("/auth/forgot-password", { method: "POST", body: { email } });
+}
+
+export function resetPassword(token: string, newPassword: string) {
+  return apiFetch<{ message: string }>("/auth/reset-password", { method: "POST", body: { token, newPassword } });
+}

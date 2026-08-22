@@ -51,7 +51,12 @@ export default function Login() {
             />
           </div>
           <div>
-            <label className="mb-1.5 block text-sm text-text-muted">Password</label>
+            <div className="mb-1.5 flex items-center justify-between">
+              <label className="text-sm text-text-muted">Password</label>
+              <Link to="/forgot-password" className="text-xs text-accent hover:text-accent-hover">
+                Forgot password?
+              </Link>
+            </div>
             <input
               type="password"
               required

@@ -6,6 +6,8 @@ import Roadmaps from "./routes/Roadmaps";
 import RoadmapDetail from "./routes/RoadmapDetail";
 import TopicDetail from "./routes/TopicDetail";
 import Login from "./routes/Login";
+import ForgotPassword from "./routes/ForgotPassword";
+import ResetPassword from "./routes/ResetPassword";
 import Signup from "./routes/Signup";
 import Dashboard from "./routes/Dashboard";
 import Search from "./routes/Search";
@@ -59,6 +61,8 @@ export default function App() {
         <Route path="/terms" element={<Terms />} />
         <Route path="/copyright" element={<Copyright />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/dashboard" element={<Dashboard />} />
 

@@ -14,6 +14,12 @@ const envSchema = z.object({
   JWT_REFRESH_SECRET: z.string().min(1, "JWT_REFRESH_SECRET is required"),
   JWT_ACCESS_EXPIRES_IN: z.string().default("15m"),
   JWT_REFRESH_EXPIRES_IN: z.string().default("30d"),
+  // Optional — password-reset emails. Without these, forgot-password still
+  // works in development: the reset link is logged to the server console
+  // instead of emailed, so local testing doesn't require a real account.
+  // Get a free API key at resend.com (100 emails/day free tier).
+  RESEND_API_KEY: z.string().optional(),
+  EMAIL_FROM: z.string().default("RouteMap <onboarding@resend.dev>"),
 });
 
 const parsed = envSchema.safeParse(process.env);

@@ -7,6 +7,11 @@ const userSchema = new Schema(
     passwordHash: { type: String }, // absent if OAuth-only
     authProvider: { type: String, enum: ["local", "google"], default: "local" },
     role: { type: String, enum: ["student", "admin"], default: "student" },
+    // Only the hash is stored — the plain token only ever exists in the
+    // email link itself, never in the database (standard practice so a DB
+    // leak alone can't be used to reset anyone's password).
+    resetPasswordTokenHash: { type: String, select: false },
+    resetPasswordExpires: { type: Date, select: false },
     profile: {
       learningGoals: { type: [String], default: [] },
       preferredLanguage: { type: String, enum: ["en", "hi", "hinglish"], default: "en" },

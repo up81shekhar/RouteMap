@@ -220,7 +220,7 @@ export default function TopicDetail() {
             <span>{progressPercent}%</span>
           </div>
           <div className="h-1.5 w-40 rounded-full bg-border">
-            <div className="h-1.5 rounded-full bg-line-coral" style={{ width: `${progressPercent}%` }} />
+            <div className="h-1.5 rounded-full bg-lime" style={{ width: `${progressPercent}%` }} />
           </div>
         </div>
       </div>

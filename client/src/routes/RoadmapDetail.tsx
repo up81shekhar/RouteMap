@@ -12,7 +12,7 @@ const colorHex: Record<LineColor, string> = {
   coral: "#FF6B4A",
   teal: "#38BDF8",
   violet: "#6366F1",
-  amber: "#F0B429",
+  amber: "#E0A82E",
 };
 
 export default function RoadmapDetail() {
@@ -158,7 +158,7 @@ export default function RoadmapDetail() {
             <Link
               to={`/roadmaps/${roadmap.slug}/${firstAvailableNode.slug}`}
               onClick={() => trackEvent("roadmap_started", { roadmap_slug: roadmap.slug })}
-              className="mt-6 inline-block w-full rounded bg-accent px-4 py-2.5 text-center text-sm font-medium text-white hover:bg-accent-hover"
+              className="mt-6 inline-block w-full rounded-full bg-text-primary px-4 py-2.5 text-center text-sm font-semibold text-ink hover:opacity-85"
             >
               Continue: {firstAvailableNode.title} →
             </Link>

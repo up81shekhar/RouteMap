@@ -164,7 +164,7 @@ export default function Home() {
                 />
                 <button
                   type="submit"
-                  className="shrink-0 rounded-lg bg-accent px-4 py-2.5 text-sm font-medium text-white transition hover:bg-accent-hover active:scale-[0.98]"
+                  className="shrink-0 rounded-full bg-text-primary px-5 py-2.5 text-sm font-semibold text-ink transition hover:opacity-85 active:scale-[0.98]"
                 >
                   Find a skill
                 </button>
@@ -426,7 +426,7 @@ export default function Home() {
 
               <Link
                 to="/roadmaps"
-                className="group mt-9 inline-flex items-center gap-3 rounded-2xl bg-accent px-6 py-3.5 text-sm font-semibold text-white shadow-2xl shadow-accent/20 transition-all hover:-translate-y-1 hover:bg-accent-hover"
+                className="group mt-9 inline-flex items-center gap-3 rounded-full bg-text-primary px-6 py-3.5 text-sm font-semibold text-ink shadow-xl transition-all hover:-translate-y-1 hover:opacity-85"
               >
                 Start your journey
                 <span className="transition-transform group-hover:translate-x-1">

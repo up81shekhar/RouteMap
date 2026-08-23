@@ -5,7 +5,7 @@ const colorHex: Record<string, string> = {
   coral: "#FF6B4A",
   teal: "#38BDF8",
   violet: "#6366F1",
-  amber: "#F0B429",
+  amber: "#E0A82E",
 };
 
 function nodeVisual(state: NodeState, hex: string) {
@@ -15,10 +15,10 @@ function nodeVisual(state: NodeState, hex: string) {
     case "current":
       return { fill: hex, stroke: hex, textClass: "text-text-primary" };
     case "unlocked":
-      return { fill: "#121815", stroke: "#324134", textClass: "text-text-primary" };
+      return { fill: "#F3F3F1", stroke: "#CACAC2", textClass: "text-text-primary" };
     case "locked":
     default:
-      return { fill: "#121815", stroke: "#212B24", textClass: "text-text-faint" };
+      return { fill: "#F3F3F1", stroke: "#E1E1DC", textClass: "text-text-faint" };
   }
 }
 
@@ -57,7 +57,7 @@ export default function SkillTree({
               {!isLast && (
                 <span
                   className="w-0.5 flex-1"
-                  style={{ background: node.state === "done" ? hex : "#212B24", minHeight: "28px" }}
+                  style={{ background: node.state === "done" ? hex : "#E1E1DC", minHeight: "28px" }}
                 />
               )}
             </div>

@@ -9,7 +9,7 @@ import { ApiRoadmap } from "../api/roadmaps";
 import { useDocumentMeta } from "../hooks/useDocumentMeta";
 import { trackEvent } from "../lib/analytics";
 
-const colorHex: Record<string, string> = { coral: "#FF6B4A", teal: "#38BDF8", violet: "#6366F1", amber: "#F0B429" };
+const colorHex: Record<string, string> = { coral: "#FF6B4A", teal: "#38BDF8", violet: "#6366F1", amber: "#E0A82E" };
 
 export default function Search() {
   const [params, setParams] = useSearchParams();

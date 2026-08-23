@@ -5,30 +5,38 @@ export default {
   theme: {
     extend: {
       colors: {
-        ink: "#0A0F0D",
-        surface: "#121815",
-        surfaceRaised: "#161D19",
+        ink: "#FFFFFF",
+        surface: "#F3F3F1",
+        surfaceRaised: "#EAEAE6",
         border: {
-          DEFAULT: "#212B24",
-          strong: "#324134",
+          DEFAULT: "#E1E1DC",
+          strong: "#CACAC2",
         },
         text: {
-          primary: "#E8EDE7",
-          muted: "#8FA097",
-          faint: "#59685D",
+          primary: "#191A23",
+          muted: "#55565F",
+          faint: "#85868D",
         },
         accent: {
-          DEFAULT: "#22A970",
-          hover: "#1C8D5C",
+          DEFAULT: "#3D8B24",
+          hover: "#2C6B1B",
+        },
+        // Positivus-style vivid highlight — used sparingly for bold CTAs,
+        // badges, and decorative fills (always paired with dark text on
+        // top, never used as body/link text color — lime-on-white fails
+        // contrast, this is a background-fill color only).
+        lime: {
+          DEFAULT: "#B9FF66",
+          dark: "#191A23",
         },
         line: {
           coral: "#FF6B4A",
           teal: "#38BDF8",
           violet: "#6366F1",
-          amber: "#F0B429",
+          amber: "#E0A82E",
         },
-        success: "#3ECF8E",
-        danger: "#E0524A",
+        success: "#1F9D55",
+        danger: "#D93025",
       },
       fontFamily: {
         display: ["'Space Grotesk'", "sans-serif"],
@@ -36,7 +44,7 @@ export default {
         mono: ["'IBM Plex Mono'", "monospace"],
       },
       borderRadius: {
-        card: "10px",
+        card: "14px",
       },
     },
   },

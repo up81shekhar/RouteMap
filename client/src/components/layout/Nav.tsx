@@ -94,7 +94,7 @@ export default function Nav() {
               </Link>
               <Link
                 to="/signup"
-                className="rounded bg-accent px-3.5 py-1.5 text-sm font-medium text-white hover:bg-accent-hover"
+                className="rounded-full bg-text-primary px-4 py-2 text-sm font-semibold text-ink hover:opacity-85"
               >
                 Sign up free
               </Link>
@@ -144,7 +144,7 @@ export default function Nav() {
                       handleLogout();
                       setOpen(false);
                     }}
-                    className="flex-1 rounded bg-accent py-2 text-center text-sm font-medium text-white"
+                    className="flex-1 rounded-full bg-text-primary py-2 text-center text-sm font-semibold text-ink"
                   >
                     Log out
                   </button>
@@ -160,7 +160,7 @@ export default function Nav() {
                   </Link>
                   <Link
                     to="/signup"
-                    className="flex-1 rounded bg-accent py-2 text-center text-sm font-medium text-white"
+                    className="flex-1 rounded-full bg-text-primary py-2 text-center text-sm font-semibold text-ink"
                     onClick={() => setOpen(false)}
                   >
                     Sign up

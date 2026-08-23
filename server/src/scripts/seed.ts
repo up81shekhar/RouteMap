@@ -249,7 +249,7 @@ async function run() {
         { nodeId: arraysNode._id, roadmapSlug: "dsa", nodeSlug: "arrays", type: "video", tag: "alternative", title: "Arrays deep dive with visualizations", source: "CS Dojo", language: "English", videoId: "rL8X2mlNHPM", durationMinutes: 35, order: 2 },
         { nodeId: arraysNode._id, roadmapSlug: "dsa", nodeSlug: "arrays", type: "video", tag: "quick", title: "Arrays in 10 minutes — revision", source: "Take U Forward", language: "Hinglish", videoId: "rL8X2mlNHPM", durationMinutes: 11, order: 3 },
         { nodeId: arraysNode._id, roadmapSlug: "dsa", nodeSlug: "arrays", type: "article", tag: "deep_dive", title: "Array data structure — full reference", source: "GeeksforGeeks", language: "English", order: 4 },
-        { nodeId: arraysNode._id, roadmapSlug: "dsa", nodeSlug: "arrays", type: "practice", tag: "recommended", title: "20 array practice problems (Easy → Hard)", source: "LearnPath Practice", language: "English", order: 5 },
+        { nodeId: arraysNode._id, roadmapSlug: "dsa", nodeSlug: "arrays", type: "practice", tag: "recommended", title: "20 array practice problems (Easy → Hard)", source: "RouteMap Practice", language: "English", order: 5 },
       ]);
       console.log("  ✓ Seeded Arrays curated resources");
     }

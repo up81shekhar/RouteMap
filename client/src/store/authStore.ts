@@ -78,12 +78,12 @@ export const useAuthStore = create<AuthState>()(
         // falls back to a local mock admin session if the API isn't reachable.
         set({ status: "loading", error: null });
         try {
-          const { accessToken } = await authApi.login("admin@learnpath.dev", "admin12345");
+          const { accessToken } = await authApi.login("admin@routemap.dev", "admin12345");
           const user = await fetchMe(accessToken);
           set({ user, accessToken, isOffline: false, status: "idle" });
         } catch (err) {
           set({
-            user: { name: "Admin", email: "admin@learnpath.dev", role: "admin" },
+            user: { name: "Admin", email: "admin@routemap.dev", role: "admin" },
             accessToken: null,
             isOffline: true,
             status: "idle",
@@ -114,6 +114,6 @@ export const useAuthStore = create<AuthState>()(
         }
       },
     }),
-    { name: "learnpath-auth", partialize: (s) => ({ user: s.user, isOffline: s.isOffline }) }
+    { name: "routemap-auth", partialize: (s) => ({ user: s.user, isOffline: s.isOffline }) }
   )
 );

@@ -3,8 +3,8 @@ import { NodeState, RoadmapNodeData } from "../../data/sampleRoadmaps";
 
 const colorHex: Record<string, string> = {
   coral: "#FF6B4A",
-  teal: "#2FBF9E",
-  violet: "#9B8CFB",
+  teal: "#38BDF8",
+  violet: "#6366F1",
   amber: "#F0B429",
 };
 
@@ -15,10 +15,10 @@ function nodeVisual(state: NodeState, hex: string) {
     case "current":
       return { fill: hex, stroke: hex, textClass: "text-text-primary" };
     case "unlocked":
-      return { fill: "#12151C", stroke: "#333949", textClass: "text-text-primary" };
+      return { fill: "#121815", stroke: "#324134", textClass: "text-text-primary" };
     case "locked":
     default:
-      return { fill: "#12151C", stroke: "#232733", textClass: "text-text-faint" };
+      return { fill: "#121815", stroke: "#212B24", textClass: "text-text-faint" };
   }
 }
 
@@ -57,7 +57,7 @@ export default function SkillTree({
               {!isLast && (
                 <span
                   className="w-0.5 flex-1"
-                  style={{ background: node.state === "done" ? hex : "#232733", minHeight: "28px" }}
+                  style={{ background: node.state === "done" ? hex : "#212B24", minHeight: "28px" }}
                 />
               )}
             </div>

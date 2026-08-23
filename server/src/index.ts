@@ -13,7 +13,7 @@ async function main() {
   }
 
   app.listen(env.PORT, () => {
-    console.log(`🚀 LearnPath API listening on http://localhost:${env.PORT}`);
+    console.log(`🚀 RouteMap API listening on http://localhost:${env.PORT}`);
   });
 }
 

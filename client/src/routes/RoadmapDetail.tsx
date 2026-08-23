@@ -10,8 +10,8 @@ import { trackEvent } from "../lib/analytics";
 
 const colorHex: Record<LineColor, string> = {
   coral: "#FF6B4A",
-  teal: "#2FBF9E",
-  violet: "#9B8CFB",
+  teal: "#38BDF8",
+  violet: "#6366F1",
   amber: "#F0B429",
 };
 

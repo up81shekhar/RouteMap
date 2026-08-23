@@ -5,29 +5,29 @@ export default {
   theme: {
     extend: {
       colors: {
-        ink: "#0B0D12",
-        surface: "#12151C",
-        surfaceRaised: "#171B24",
+        ink: "#0A0F0D",
+        surface: "#121815",
+        surfaceRaised: "#161D19",
         border: {
-          DEFAULT: "#232733",
-          strong: "#333949",
+          DEFAULT: "#212B24",
+          strong: "#324134",
         },
         text: {
-          primary: "#E9EBF0",
-          muted: "#8B93A7",
-          faint: "#5B6272",
+          primary: "#E8EDE7",
+          muted: "#8FA097",
+          faint: "#59685D",
         },
         accent: {
-          DEFAULT: "#f97316",
-          hover: "#3D63E0",
+          DEFAULT: "#22A970",
+          hover: "#1C8D5C",
         },
         line: {
           coral: "#FF6B4A",
-          teal: "#2FBF9E",
-          violet: "#9B8CFB",
+          teal: "#38BDF8",
+          violet: "#6366F1",
           amber: "#F0B429",
         },
-        success: "#2FBF71",
+        success: "#3ECF8E",
         danger: "#E0524A",
       },
       fontFamily: {

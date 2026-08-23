@@ -55,6 +55,6 @@ export const useProgressStore = create<ProgressState>()(
         }
       },
     }),
-    { name: "learnpath-progress" }
+    { name: "routemap-progress" }
   )
 );

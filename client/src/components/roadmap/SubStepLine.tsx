@@ -6,7 +6,7 @@ const dotColor = (state: NodeState) => {
     case "current":
       return "#FF6B4A";
     default:
-      return "#333949";
+      return "#324134";
   }
 };
 

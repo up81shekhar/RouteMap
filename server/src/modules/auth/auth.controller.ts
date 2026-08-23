@@ -4,7 +4,7 @@ import { verifyRefreshToken } from "../../utils/jwt.js";
 import { asyncHandler, ApiError } from "../../utils/asyncHandler.js";
 import * as authService from "./auth.service.js";
 
-const REFRESH_COOKIE = "learnpath_refresh";
+const REFRESH_COOKIE = "routemap_refresh";
 const isProd = process.env.NODE_ENV === "production";
 const REFRESH_COOKIE_OPTS = {
   httpOnly: true,

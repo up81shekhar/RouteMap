@@ -1,4 +1,4 @@
-# LearnPath API
+# RouteMap API
 
 Express + TypeScript + MongoDB backend. See `/docs/ARCHITECTURE.md` and
 `/docs/DATABASE_SCHEMA.md` at the project root for the full design.

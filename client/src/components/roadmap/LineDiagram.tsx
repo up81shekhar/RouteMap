@@ -30,7 +30,7 @@ export default function LineDiagram() {
     >
       <defs>
         {/* Soft glowing shadow for the active path */}
-        <filter id="orange-glow" x="-20%" y="-20%" width="140%" height="140%">
+        <filter id="accent-glow" x="-20%" y="-20%" width="140%" height="140%">
           <feGaussianBlur stdDeviation="4" result="blur" />
           <feComposite in="SourceGraphic" in2="blur" operator="over" />
         </filter>
@@ -40,7 +40,7 @@ export default function LineDiagram() {
       <path
         d={fullPath}
         fill="none"
-        stroke="#2A2F3D"
+        stroke="#324134"
         strokeWidth={2}
         strokeDasharray="6 6"
       >
@@ -59,9 +59,9 @@ export default function LineDiagram() {
       <path
         d={activePath}
         fill="none"
-        stroke="#f97316" /* L1 Orange */
+        stroke="#22A970" /* Accent */
         strokeWidth={3}
-        filter="url(#orange-glow)"
+        filter="url(#accent-glow)"
       />
 
       {/* 3. Nodes and Labels */}
@@ -78,14 +78,14 @@ export default function LineDiagram() {
             {/* -- UPCOMING STATE -- */}
             {isUpcoming && (
               <>
-                <circle cx={s.x} cy={s.y} r={6} fill="#12151C" stroke="#2A2F3D" strokeWidth={2} />
+                <circle cx={s.x} cy={s.y} r={6} fill="#121815" stroke="#324134" strokeWidth={2} />
               </>
             )}
 
             {/* -- DONE STATE -- */}
             {isDone && (
               <>
-                <circle cx={s.x} cy={s.y} r={6} fill="#f97316" />
+                <circle cx={s.x} cy={s.y} r={6} fill="#22A970" />
               </>
             )}
 
@@ -93,7 +93,7 @@ export default function LineDiagram() {
             {isCurrent && (
               <>
                 {/* Expanding pulse animation */}
-                <circle cx={s.x} cy={s.y} r={8} fill="#f97316" opacity="0.4">
+                <circle cx={s.x} cy={s.y} r={8} fill="#22A970" opacity="0.4">
                   <animate
                     attributeName="r"
                     values="8; 24"
@@ -109,11 +109,11 @@ export default function LineDiagram() {
                 </circle>
                 
                 {/* Static outer glow ring */}
-                <circle cx={s.x} cy={s.y} r={12} fill="#f97316" opacity="0.15" />
+                <circle cx={s.x} cy={s.y} r={12} fill="#22A970" opacity="0.15" />
                 
                 {/* Core dot */}
-                <circle cx={s.x} cy={s.y} r={6} fill="#12151C" stroke="#f97316" strokeWidth={3} />
-                <circle cx={s.x} cy={s.y} r={2} fill="#f97316" />
+                <circle cx={s.x} cy={s.y} r={6} fill="#121815" stroke="#22A970" strokeWidth={3} />
+                <circle cx={s.x} cy={s.y} r={2} fill="#22A970" />
               </>
             )}
 
@@ -125,7 +125,7 @@ export default function LineDiagram() {
               fontSize={13}
               fontWeight={isCurrent ? 600 : 500}
               fontFamily="Inter, sans-serif"
-              fill={isDone || isCurrent ? "#E9EBF0" : "#6B7280"}
+              fill={isDone || isCurrent ? "#E8EDE7" : "#59685D"}
             >
               {s.label}
             </text>
@@ -138,9 +138,9 @@ export default function LineDiagram() {
                 width={64}
                 height={18}
                 rx={9}
-                fill="#f97316"
+                fill="#22A970"
                 fillOpacity="0.15"
-                stroke="#f97316"
+                stroke="#22A970"
                 strokeOpacity="0.3"
               />
             )}
@@ -153,7 +153,7 @@ export default function LineDiagram() {
                 fontWeight="bold"
                 fontFamily="Inter, sans-serif"
                 letterSpacing="0.05em"
-                fill="#f97316"
+                fill="#22A970"
               >
                 CURRENT
               </text>

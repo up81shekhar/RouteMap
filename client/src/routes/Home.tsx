@@ -395,19 +395,7 @@ export default function Home() {
       {/* ── Native ad ────────────────────────────────────────── */}
       <section className="border-t border-border py-10">
         <div className="container-page">
-          {/* <AdSlot placement="native_block" /> */}
-          <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1876038455348983"
-     crossorigin="anonymous"></script>
-<!-- ads1Horizontal -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-1876038455348983"
-     data-ad-slot="3439085465"
-     data-ad-format="auto"
-     data-full-width-responsive="true"></ins>
-<script>
-     (adsbygoogle = window.adsbygoogle || []).push({});
-</script>
+           <AdSlot placement="native_block" /> 
         </div>
       </section>
 

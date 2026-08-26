@@ -22,7 +22,7 @@ export async function login(email: string, password: string) {
   const valid = await bcrypt.compare(password, user.passwordHash);
   if (!valid) throw new ApiError(401, "Invalid email or password");
 
-  return issueTokens(user.id, user.role as "student" | "admin");
+  return issueTokens(user.id, user.role as "student" | "admin" | "institution_admin");
 }
 
 function hashToken(token: string) {
@@ -62,7 +62,7 @@ export async function resetPassword(token: string, newPassword: string) {
   await user.save();
 }
 
-function issueTokens(userId: string, role: "student" | "admin") {
+function issueTokens(userId: string, role: "student" | "admin" | "institution_admin") {
   const accessToken = signAccessToken({ sub: userId, role });
   const refreshToken = signRefreshToken({ sub: userId });
   return { accessToken, refreshToken };

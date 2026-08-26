@@ -1,9 +1,11 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { Link, useParams } from "react-router-dom";
 import SkillTree from "../components/roadmap/SkillTree";
 import AdSlot from "../components/ads/AdSlot";
 import { LineColor } from "../data/sampleRoadmaps";
 import { useAdminStore } from "../store/adminStore";
+import { useProgressStore } from "../store/progressStore";
+import { computeNodeStates } from "../utils/nodeStates";
 import { useDocumentMeta, SITE_URL } from "../hooks/useDocumentMeta";
 import { useJsonLd } from "../hooks/useJsonLd";
 import { trackEvent } from "../lib/analytics";
@@ -65,6 +67,16 @@ export default function RoadmapDetail() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [roadmap?.slug]);
 
+  // Subscribing to `completed` (not just calling getState() once) is what
+  // makes this re-render the moment a lesson is marked complete elsewhere —
+  // otherwise the skill tree only updates on the next full page load.
+  const completedProgress = useProgressStore((s) => s.completed);
+  const liveNodes = useMemo(
+    () => (roadmap ? computeNodeStates(roadmap.slug, roadmap.nodes) : []),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [roadmap?.slug, roadmap?.nodes, completedProgress]
+  );
+
   // Still figuring out whether this roadmap exists — either the very first
   // load hasn't resolved yet, or we're offline and actively retrying (e.g.
   // a Render free-tier backend waking up can take up to ~2 minutes). Show a
@@ -95,7 +107,9 @@ export default function RoadmapDetail() {
     );
   }
 
-  const firstAvailableNode = roadmap.nodes.find((n) => n.state !== "locked") ?? roadmap.nodes[0];
+  const firstAvailableNode = liveNodes.find((n) => n.state !== "locked") ?? liveNodes[0];
+  const doneCount = liveNodes.filter((n) => n.state === "done").length;
+  const liveProgressPercent = liveNodes.length ? Math.round((doneCount / liveNodes.length) * 100) : 0;
 
   return (
     <div className="container-page py-12">
@@ -144,12 +158,12 @@ export default function RoadmapDetail() {
           <div className="mt-6">
             <div className="mb-1.5 flex items-center justify-between text-xs text-text-muted">
               <span>Progress</span>
-              <span>{roadmap.progressPercent}%</span>
+              <span>{liveProgressPercent}%</span>
             </div>
             <div className="h-1.5 w-full rounded-full bg-border">
               <div
                 className="h-1.5 rounded-full"
-                style={{ width: `${roadmap.progressPercent}%`, background: colorHex[roadmap.color] }}
+                style={{ width: `${liveProgressPercent}%`, background: colorHex[roadmap.color] }}
               />
             </div>
           </div>
@@ -170,7 +184,7 @@ export default function RoadmapDetail() {
         {/* Main: skill tree */}
         <div>
           <p className="station-code mb-2">The line</p>
-          <SkillTree roadmapSlug={roadmap.slug} nodes={roadmap.nodes} color={roadmap.color} />
+          <SkillTree roadmapSlug={roadmap.slug} nodes={liveNodes} color={roadmap.color} />
         </div>
       </div>
     </div>

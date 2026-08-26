@@ -4,19 +4,29 @@ export type ApiUser = {
   _id: string;
   name: string;
   email: string;
-  role: "student" | "admin";
+  role: "student" | "admin" | "institution_admin";
+  institutionId?: string;
 };
 
 export function signup(name: string, email: string, password: string) {
-  return apiFetch<{ accessToken: string }>("/auth/signup", { method: "POST", body: { name, email, password } });
+  return apiFetch<{ accessToken: string; refreshToken: string }>("/auth/signup", {
+    method: "POST",
+    body: { name, email, password },
+  });
 }
 
 export function login(email: string, password: string) {
-  return apiFetch<{ accessToken: string }>("/auth/login", { method: "POST", body: { email, password } });
+  return apiFetch<{ accessToken: string; refreshToken: string }>("/auth/login", {
+    method: "POST",
+    body: { email, password },
+  });
 }
 
-export function refresh() {
-  return apiFetch<{ accessToken: string }>("/auth/refresh", { method: "POST" });
+export function refresh(refreshToken?: string | null) {
+  return apiFetch<{ accessToken: string; refreshToken: string }>("/auth/refresh", {
+    method: "POST",
+    body: { refreshToken },
+  });
 }
 
 export function logout() {

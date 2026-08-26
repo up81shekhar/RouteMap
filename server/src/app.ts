@@ -15,6 +15,7 @@ import searchRoutes from "./modules/search/search.routes.js";
 import dashboardRoutes from "./modules/dashboard/dashboard.routes.js";
 import practiceRoutes from "./modules/practice/practice.routes.js";
 import sitemapRoutes from "./modules/sitemap/sitemap.routes.js";
+import institutionsRoutes from "./modules/institutions/institutions.routes.js";
 import adminRoutes from "./modules/admin/admin.routes.js";
 
 export const app = express();
@@ -59,6 +60,7 @@ app.use("/api/search", searchLimiter, searchRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/practice", practiceRoutes);
 app.use("/api/sitemap.xml", sitemapRoutes);
+app.use("/api/institutions", institutionsRoutes);
 app.use("/api/admin", adminRoutes);
 
 app.use(notFoundHandler);

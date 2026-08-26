@@ -22,27 +22,42 @@ export const signupHandler = asyncHandler(async (req: Request, res: Response) =>
   const { name, email, password } = req.body;
   const { accessToken, refreshToken } = await authService.signup(name, email, password);
   res.cookie(REFRESH_COOKIE, refreshToken, REFRESH_COOKIE_OPTS);
-  res.status(201).json({ accessToken });
+  // refreshToken is also returned in the body (not just the cookie) — the
+  // frontend and API live on different domains (Vercel/Render), and browsers
+  // increasingly block or restrict cross-site cookies (Safari always has;
+  // Chrome is moving that way too), which was silently logging everyone out
+  // on refresh whenever the cookie didn't survive. The client stores this
+  // explicitly and sends it back on /refresh instead of relying on the
+  // browser to attach the cookie automatically.
+  res.status(201).json({ accessToken, refreshToken });
 });
 
 export const loginHandler = asyncHandler(async (req: Request, res: Response) => {
   const { email, password } = req.body;
   const { accessToken, refreshToken } = await authService.login(email, password);
   res.cookie(REFRESH_COOKIE, refreshToken, REFRESH_COOKIE_OPTS);
-  res.json({ accessToken });
+  res.json({ accessToken, refreshToken });
 });
 
 export const refreshHandler = asyncHandler(async (req: Request, res: Response) => {
-  const token = req.cookies?.[REFRESH_COOKIE];
+  // Prefer an explicitly-sent token (reliable cross-site) but still accept
+  // the cookie as a fallback for same-origin/local-dev setups.
+  const token = req.body?.refreshToken || req.cookies?.[REFRESH_COOKIE];
   if (!token) throw new ApiError(401, "No refresh token");
 
-  const payload = verifyRefreshToken(token);
+  let payload: { sub: string };
+  try {
+    payload = verifyRefreshToken(token);
+  } catch {
+    throw new ApiError(401, "Invalid or expired refresh token");
+  }
+
   const user = await User.findById(payload.sub);
   if (!user) throw new ApiError(401, "User no longer exists");
 
-  const { accessToken, refreshToken } = authService.issueTokens(user.id, user.role as "student" | "admin");
+  const { accessToken, refreshToken } = authService.issueTokens(user.id, user.role as "student" | "admin" | "institution_admin");
   res.cookie(REFRESH_COOKIE, refreshToken, REFRESH_COOKIE_OPTS);
-  res.json({ accessToken });
+  res.json({ accessToken, refreshToken });
 });
 
 export const logoutHandler = asyncHandler(async (_req: Request, res: Response) => {

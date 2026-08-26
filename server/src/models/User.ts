@@ -6,7 +6,10 @@ const userSchema = new Schema(
     email: { type: String, required: true, unique: true, lowercase: true, trim: true },
     passwordHash: { type: String }, // absent if OAuth-only
     authProvider: { type: String, enum: ["local", "google"], default: "local" },
-    role: { type: String, enum: ["student", "admin"], default: "student" },
+    role: { type: String, enum: ["student", "admin", "institution_admin"], default: "student" },
+    // Set for students who've joined via an institution join code, and for
+    // the institution_admin who owns the institution (see Institution model).
+    institutionId: { type: Schema.Types.ObjectId, ref: "Institution" },
     // Only the hash is stored — the plain token only ever exists in the
     // email link itself, never in the database (standard practice so a DB
     // leak alone can't be used to reset anyone's password).

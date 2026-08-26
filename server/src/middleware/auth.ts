@@ -6,7 +6,7 @@ declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Express {
     interface Request {
-      user?: { id: string; role: "student" | "admin" };
+      user?: { id: string; role: "student" | "admin" | "institution_admin" };
     }
   }
 }

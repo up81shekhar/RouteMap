@@ -395,7 +395,7 @@ export default function Home() {
       {/* ── Native ad ────────────────────────────────────────── */}
       <section className="border-t border-border py-10">
         <div className="container-page">
-          <AdSlot placement="native_block" />
+           <AdSlot placement="native_block" /> 
         </div>
       </section>
 

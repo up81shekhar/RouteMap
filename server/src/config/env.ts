@@ -20,6 +20,10 @@ const envSchema = z.object({
   // Get a free API key at resend.com (100 emails/day free tier).
   RESEND_API_KEY: z.string().optional(),
   EMAIL_FROM: z.string().default("RouteMap <onboarding@resend.dev>"),
+  // Optional — used only by the admin "import playlist" feature. Without
+  // this, everything else still works; that endpoint just returns a clear
+  // 500 telling the admin to set it.
+  YOUTUBE_API_KEY: z.string().optional(),
 });
 
 const parsed = envSchema.safeParse(process.env);

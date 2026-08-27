@@ -160,7 +160,7 @@ export default function Search() {
         </div>
       )}
 
-      <AdsterraSlot className="mt-4" />
+      <AdSlot placement="search_sidebar" className="mt-4" />
     </div>
   );
 }

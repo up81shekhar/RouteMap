@@ -1,6 +1,6 @@
 import { FormEvent, useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import AdSlot from "../components/ads/AdSlot";
+import AdsterraSlot from "../components/ads/AdsterraSlot";
 import { useAdminStore } from "../store/adminStore";
 import * as searchApi from "../api/search";
 import { ApiUnreachableError } from "../api/client";

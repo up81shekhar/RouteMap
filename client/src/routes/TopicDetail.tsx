@@ -201,6 +201,10 @@ export default function TopicDetail() {
     viewingResource?.videoId ?? lessonResource?.videoId ?? currentLesson?.videoId ?? primaryResource?.videoId;
   const progressPercent = lessons.length ? Math.round((completedArr.length / lessons.length) * 100) : 0;
 
+  const sortedNodes = [...roadmap.nodes];
+  const currentNodeIndex = sortedNodes.findIndex((n) => n.slug === node.slug);
+  const nextNode = currentNodeIndex >= 0 ? sortedNodes[currentNodeIndex + 1] : undefined;
+
   return (
     <div className="container-page py-12">
       <p className="station-code mb-3">

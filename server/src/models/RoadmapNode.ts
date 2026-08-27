@@ -13,6 +13,10 @@ const roadmapNodeSchema = new Schema(
     tags: { type: [String], default: [] },
     order: { type: Number, required: true },
     isPublished: { type: Boolean, default: false },
+    // "playlist" = auto-created by the YouTube playlist importer (one node
+    // per video, title taken verbatim from YouTube — no fixed lesson steps).
+    // "manual" = hand-curated the old way (may use the 4-step lesson split).
+    contentSource: { type: String, enum: ["manual", "playlist"], default: "manual" },
   },
   { timestamps: true }
 );

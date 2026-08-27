@@ -24,6 +24,7 @@ import AdminRoadmapNew from "./routes/admin/AdminRoadmapNew";
 import AdminRoadmapEditor from "./routes/admin/AdminRoadmapEditor";
 import AdminTopicResources from "./routes/admin/AdminTopicResources";
 import AdminTopicPractice from "./routes/admin/AdminTopicPractice";
+import AdminPlaylistImport from "./routes/admin/AdminPlaylistImport";
 import { useAuthStore } from "./store/authStore";
 import { useAdminStore } from "./store/adminStore";
 import { initAnalytics, trackPageview } from "./lib/analytics";

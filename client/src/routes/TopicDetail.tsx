@@ -327,7 +327,7 @@ export default function TopicDetail() {
             </ul>
           </div>
 
-          <AdSlot placement="native_block" className="mt-10" />
+          <AdsterraSlot className="mt-10" />
 
           {otherResources.length > 0 && (
             <div className="mt-10">

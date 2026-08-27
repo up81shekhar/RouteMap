@@ -383,7 +383,7 @@ export default function TopicDetail() {
             })}
           </ol>
 
-          <AdSlot placement="roadmap_sidebar" className="mt-6" />
+          <AdBannerSlot variant="compactSidebar" className="mt-6" />
         </aside>
       </div>
     </div>

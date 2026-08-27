@@ -25,7 +25,7 @@ export default function AdminTopicResources() {
   const [submitting, setSubmitting] = useState(false);
 
   const lessons = roadmapSlug && nodeSlug && node
-    ? getStaticTopicContent(roadmapSlug, nodeSlug, node.title).lessons
+    ? getStaticTopicContent(roadmapSlug, nodeSlug, node.title, node.contentSource).lessons
     : [];
 
   useEffect(() => {

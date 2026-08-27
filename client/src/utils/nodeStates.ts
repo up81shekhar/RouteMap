@@ -16,7 +16,7 @@ export function computeNodeStates(roadmapSlug: string, nodes: RoadmapNodeData[])
 
   return nodes.map((node) => {
     const key = `${roadmapSlug}/${node.slug}`;
-    const totalLessons = getStaticTopicContent(roadmapSlug, node.slug, node.title).lessons.length;
+    const totalLessons = getStaticTopicContent(roadmapSlug, node.slug, node.title, node.contentSource).lessons.length;
     const completedCount = completed[key]?.length ?? 0;
     const isDone = totalLessons > 0 && completedCount >= totalLessons;
 

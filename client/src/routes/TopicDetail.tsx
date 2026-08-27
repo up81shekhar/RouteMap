@@ -3,6 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import ResourceCard from "../components/resource/ResourceCard";
 import PracticeQuiz from "../components/practice/PracticeQuiz";
 import AdSlot from "../components/ads/AdSlot";
+import AdBannerSlot from "../components/ads/AdBannerSlot";
 import { getStaticTopicContent } from "../data/sampleRoadmaps";
 import { useProgressStore } from "../store/progressStore";
 import { useAdminStore } from "../store/adminStore";

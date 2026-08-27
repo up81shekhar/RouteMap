@@ -178,7 +178,7 @@ export default function RoadmapDetail() {
             </Link>
           )}
 
-          <AdSlot placement="roadmap_sidebar" className="mt-8" />
+          <AdBannerSlot variant="sidebar" className="mt-8" />
         </aside>
 
         {/* Main: skill tree */}

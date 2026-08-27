@@ -93,7 +93,7 @@ export default function Roadmaps() {
         </p>
       )}
 
-      <AdSlot placement="native_block" className="mt-10" />
+      <AdsterraSlot className="mt-10" />
 
       <p className="mt-10 text-center text-sm">
         <Link to="/" className="text-accent hover:text-accent-hover">

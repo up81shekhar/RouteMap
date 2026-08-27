@@ -72,7 +72,10 @@ export default function TopicDetail() {
   }, [roadmapSlug, slug, isOffline]);
 
   const staticContent = useMemo(
-    () => (roadmapSlug && slug && node ? getStaticTopicContent(roadmapSlug, slug, node.title) : undefined),
+    () =>
+      roadmapSlug && slug && node
+        ? getStaticTopicContent(roadmapSlug, slug, node.title, node.contentSource)
+        : undefined,
     [roadmapSlug, slug, node]
   );
   const lessons = useMemo(() => staticContent?.lessons ?? [], [staticContent]);

@@ -8,6 +8,8 @@ export type ApiRoadmapNode = {
   estimatedHours: number;
   order: number;
   isPublished: boolean;
+  /** "playlist" = auto-imported from YouTube (single real-titled video per station, no fixed lesson steps). */
+  contentSource?: "manual" | "playlist";
 };
 
 export type ApiRoadmap = {

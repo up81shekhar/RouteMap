@@ -48,6 +48,14 @@ export default function App() {
     trackPageview(location.pathname + location.search, document.title);
   }, [location.pathname, location.search]);
 
+  useEffect(() => {
+    // React Router doesn't reset scroll position on navigation like a
+    // traditional multi-page site — without this, going from a long page
+    // (e.g. the roadmap line) to a short one (e.g. a topic) keeps the old
+    // scroll offset, so the new page appears to "open from the bottom".
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
+
   return (
     <Shell>
       <Routes>

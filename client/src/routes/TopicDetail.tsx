@@ -294,8 +294,23 @@ export default function TopicDetail() {
           </div>
 
           {progressPercent === 100 && (
-            <div className="mt-4 rounded-card border border-success/30 bg-success/10 px-4 py-3 text-sm text-success">
-              Topic complete. Continue to the next station from the roadmap line.
+            <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-card border border-success/30 bg-success/10 px-4 py-3 text-sm text-success">
+              <span>Topic complete.</span>
+              {nextNode ? (
+                <Link
+                  to={`/roadmaps/${roadmap.slug}/${nextNode.slug}`}
+                  className="rounded-full bg-success px-4 py-1.5 text-xs font-semibold text-white hover:opacity-90"
+                >
+                  Next: {nextNode.title} →
+                </Link>
+              ) : (
+                <Link
+                  to={`/roadmaps/${roadmap.slug}`}
+                  className="rounded-full bg-success px-4 py-1.5 text-xs font-semibold text-white hover:opacity-90"
+                >
+                  You finished the line 🎉 View summary →
+                </Link>
+              )}
             </div>
           )}
 

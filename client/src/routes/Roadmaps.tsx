@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import RoadmapCard, { RoadmapCardData } from "../components/roadmap/RoadmapCard";
-import AdSlot from "../components/ads/AdSlot";
+import AdsterraSlot from "../components/ads/AdsterraSlot";
 import { RoadmapCategory } from "../data/sampleRoadmaps";
 import { useAdminStore } from "../store/adminStore";
 import { useDocumentMeta } from "../hooks/useDocumentMeta";

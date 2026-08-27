@@ -2,7 +2,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { useMemo, useState } from "react";
 import LineDiagram from "../components/roadmap/LineDiagram";
 import RoadmapCard, { RoadmapCardData } from "../components/roadmap/RoadmapCard";
-import AdSlot from "../components/ads/AdSlot";
 import AdBannerSlot from "../components/ads/AdBannerSlot";
 import { RoadmapCategory } from "../data/sampleRoadmaps";
 import { useAdminStore } from "../store/adminStore";

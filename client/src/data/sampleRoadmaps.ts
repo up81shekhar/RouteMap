@@ -345,11 +345,25 @@ export function getTopicData(roadmapSlug: string, nodeSlug: string) {
  * panel. Resources are owned separately by the admin store so curation can
  * evolve without needing this static content to change too.
  */
-export function getStaticTopicContent(roadmapSlug: string, nodeSlug: string, nodeTitle: string) {
+export function getStaticTopicContent(
+  roadmapSlug: string,
+  nodeSlug: string,
+  nodeTitle: string,
+  contentSource?: "manual" | "playlist"
+) {
   const key = `${roadmapSlug}/${nodeSlug}`;
   const curated = curatedTopics[key];
   if (curated) {
     return { whatYouWillLearn: curated.whatYouWillLearn, lessons: curated.lessons, prerequisites: curated.prerequisites };
+  }
+  if (contentSource === "playlist") {
+    // Playlist-imported stations are already one real video with its real
+    // title — no fake Intro/Core/Examples/Practice split needed or wanted.
+    return {
+      whatYouWillLearn: [] as string[],
+      lessons: [{ title: nodeTitle }] as LessonStep[],
+      prerequisites: [] as string[],
+    };
   }
   return {
     whatYouWillLearn: [`Core concepts of ${nodeTitle}`, "Worked examples", "Common mistakes to avoid", "Practice problems"],

@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from "react";
 import { Link, useParams } from "react-router-dom";
 import SkillTree from "../components/roadmap/SkillTree";
-import AdSlot from "../components/ads/AdSlot";
+import AdBannerSlot from "../components/ads/AdBannerSlot";
 import { LineColor } from "../data/sampleRoadmaps";
 import { useAdminStore } from "../store/adminStore";
 import { useProgressStore } from "../store/progressStore";

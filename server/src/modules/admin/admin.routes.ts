@@ -82,4 +82,16 @@ router.delete("/resources/:id", resourcesController.deleteResource);
 router.post("/practice", validateBody(practiceQuestionSchema), practiceController.addPracticeQuestion);
 router.delete("/practice/:id", practiceController.deletePracticeQuestion);
 
+// Playlist import — creates a whole new course from a YouTube playlist,
+// one station per video, titled from the real video title.
+const playlistImportSchema = z.object({
+  playlistUrl: z.string().min(1),
+  category: z.enum(["tech", "exam", "school", "skill"]),
+  color: z.enum(["coral", "teal", "violet", "amber"]),
+  difficulty: z.enum(["Beginner", "Intermediate", "Advanced"]),
+  title: z.string().optional(),
+  description: z.string().optional(),
+});
+router.post("/import/playlist", validateBody(playlistImportSchema), playlistImportController.importPlaylist);
+
 export default router;

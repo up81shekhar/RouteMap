@@ -84,6 +84,23 @@ export function deleteResource(id: string, accessToken: string) {
   return apiFetch<void>(`/admin/resources/${id}`, { method: "DELETE", accessToken });
 }
 
+export type ImportPlaylistInput = {
+  playlistUrl: string;
+  category: RoadmapCategory;
+  color: LineColor;
+  difficulty: "Beginner" | "Intermediate" | "Advanced";
+  title?: string;
+  description?: string;
+};
+
+export function importPlaylist(input: ImportPlaylistInput, accessToken: string) {
+  return apiFetch<{ roadmap: ApiRoadmap; videosImported: number }>("/admin/import/playlist", {
+    method: "POST",
+    body: input,
+    accessToken,
+  });
+}
+
 export type NewPracticeQuestionInput = {
   roadmapSlug: string;
   nodeSlug: string;

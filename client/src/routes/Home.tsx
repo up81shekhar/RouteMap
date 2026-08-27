@@ -200,7 +200,7 @@ export default function Home() {
       {/* ── Popular roadmaps ─────────────────────────────────── */}
       <section className="border-t border-border bg-surface/30 py-20">
         <div className="container-page">
-          <AdSlot placement="homepage_banner" className="mb-12" />
+          <AdBannerSlot variant="content" className="mb-12" />
 
           <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <div>

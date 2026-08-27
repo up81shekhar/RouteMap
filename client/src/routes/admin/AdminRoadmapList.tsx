@@ -22,12 +22,20 @@ export default function AdminRoadmapList() {
     <div>
       <div className="mb-6 flex items-center justify-between">
         <h1 className="font-display text-2xl font-semibold">Roadmaps</h1>
-        <Link
-          to="/admin/roadmaps/new"
-          className="rounded bg-accent px-4 py-2 text-sm font-medium text-white hover:bg-accent-hover"
-        >
-          + New roadmap
-        </Link>
+        <div className="flex gap-2">
+          <Link
+            to="/admin/import-playlist"
+            className="rounded border border-border px-4 py-2 text-sm font-medium text-text-primary hover:border-accent hover:text-accent"
+          >
+            Import from playlist
+          </Link>
+          <Link
+            to="/admin/roadmaps/new"
+            className="rounded bg-accent px-4 py-2 text-sm font-medium text-white hover:bg-accent-hover"
+          >
+            + New roadmap
+          </Link>
+        </div>
       </div>
 
       <div className="overflow-hidden rounded-card border border-border">

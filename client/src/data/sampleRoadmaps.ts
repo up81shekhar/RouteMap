@@ -7,6 +7,8 @@ export type RoadmapNodeData = {
   title: string;
   state: NodeState;
   estimatedHours: number;
+  /** "playlist" = auto-imported from YouTube (single real-titled video, no fixed lesson steps). */
+  contentSource?: "manual" | "playlist";
 };
 
 export type RoadmapDetailData = {

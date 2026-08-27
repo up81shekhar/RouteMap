@@ -62,7 +62,13 @@ function apiRoadmapToLocal(r: roadmapsApi.ApiRoadmap, existingNodes: RoadmapNode
 function apiNodesToLocal(nodes: roadmapsApi.ApiRoadmapNode[]): RoadmapNodeData[] {
   return nodes
     .sort((a, b) => a.order - b.order)
-    .map((n, i) => ({ slug: n.slug, title: n.title, estimatedHours: n.estimatedHours, state: i === 0 ? "current" : "locked" }));
+    .map((n, i) => ({
+      slug: n.slug,
+      title: n.title,
+      estimatedHours: n.estimatedHours,
+      state: i === 0 ? "current" : "locked",
+      contentSource: n.contentSource,
+    }));
 }
 
 function apiResourceToLocal(r: roadmapsApi.ApiResource): ResourceData {

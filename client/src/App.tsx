@@ -76,6 +76,8 @@ export default function App() {
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/institution/create" element={<CreateInstitution />} />
+        <Route path="/institution" element={<InstitutionDashboard />} />
 
         <Route
           path="/admin"

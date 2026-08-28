@@ -25,6 +25,8 @@ import AdminRoadmapEditor from "./routes/admin/AdminRoadmapEditor";
 import AdminTopicResources from "./routes/admin/AdminTopicResources";
 import AdminTopicPractice from "./routes/admin/AdminTopicPractice";
 import AdminPlaylistImport from "./routes/admin/AdminPlaylistImport";
+import CreateInstitution from "./routes/CreateInstitution";
+import InstitutionDashboard from "./routes/InstitutionDashboard";
 import { useAuthStore } from "./store/authStore";
 import { useAdminStore } from "./store/adminStore";
 import { initAnalytics, trackPageview } from "./lib/analytics";

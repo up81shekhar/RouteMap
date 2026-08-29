@@ -7,6 +7,7 @@ import * as roadmapsController from "../roadmaps/roadmaps.controller.js";
 import * as resourcesController from "../resources/resources.controller.js";
 import * as practiceController from "../practice/practice.controller.js";
 import * as playlistImportController from "./playlistImport.controller.js";
+import * as notesController from "../notes/notes.controller.js";
 
 const router = Router();
 

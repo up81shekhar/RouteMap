@@ -62,6 +62,7 @@ app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/practice", practiceRoutes);
 app.use("/api/sitemap.xml", sitemapRoutes);
 app.use("/api/institutions", institutionsRoutes);
+app.use("/api/notes", notesRoutes);
 app.use("/api/admin", adminRoutes);
 
 app.use(notFoundHandler);

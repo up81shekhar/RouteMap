@@ -93,6 +93,8 @@ export default function App() {
         >
           <Route index element={<AdminRoadmapList />} />
           <Route path="import-playlist" element={<AdminPlaylistImport />} />
+          <Route path="notes" element={<AdminNotesList />} />
+          <Route path="notes/:slug" element={<AdminNoteEditor />} />
           <Route path="roadmaps/new" element={<AdminRoadmapNew />} />
           <Route path="roadmaps/:slug" element={<AdminRoadmapEditor />} />
           <Route path="roadmaps/:roadmapSlug/topics/:nodeSlug" element={<AdminTopicResources />} />

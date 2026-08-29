@@ -153,10 +153,23 @@ export const useAdminStore = create<AdminState>()((set, get) => ({
         }),
         isOffline: false,
         loaded: true,
+        hasEverConnected: true,
       }));
     } catch (err) {
       if (err instanceof ApiUnreachableError) {
-        // Show local demo data immediately so the UI isn't blank, but keep
+        if (get().hasEverConnected) {
+          // We've already shown real, progress-bearing data this session —
+          // a later transient blip (e.g. right after login, mid-cold-start)
+          // must NOT swap it for the demo catalog, whose node slugs don't
+          // match the real ones. That swap is exactly what made completed
+          // progress look like it had reset. Just keep the real data on
+          // screen and retry quietly in the background.
+          set({ loaded: true });
+          void get().retryConnection();
+          return;
+        }
+        // First load this session and the backend isn't reachable yet —
+        // show local demo data immediately so the UI isn't blank, but keep
         // retrying in the background. Free-tier hosts (e.g. Render) can take
         // 30-60s to wake from sleep, and the very first request during that
         // window often fails outright rather than just being slow — without

@@ -141,6 +141,7 @@ export const useAdminStore = create<AdminState>()((set, get) => ({
   isOffline: false,
   retrying: false,
   loaded: false,
+  hasEverConnected: false,
 
   loadRoadmaps: async () => {
     try {

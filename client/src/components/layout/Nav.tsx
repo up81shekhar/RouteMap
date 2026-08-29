@@ -8,6 +8,7 @@ const links = [
   { to: "/roadmaps", label: "Roadmaps" },
   { to: "/roadmaps?category=exam", label: "Practice" },
   { to: "/roadmaps/placement-prep", label: "Placements" },
+  { to: "/notes", label: "Notes" },
 ];
 
 export default function Nav() {

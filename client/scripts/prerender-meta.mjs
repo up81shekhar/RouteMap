@@ -93,6 +93,26 @@ async function main() {
     })
   );
 
+  writePage(
+    "/notes",
+    renderPage(template, {
+      title: "Free Notes Library",
+      description:
+        "Free study notes for exams, coding, and school subjects — typed notes and downloadable PDFs, all free on RouteMap.",
+      path: "/notes",
+    })
+  );
+
+  try {
+    const { notes } = await fetchJson(`${API_BASE}/notes`);
+    for (const note of notes ?? []) {
+      const notePath = `/notes/${note.slug}`;
+      writePage(notePath, renderPage(template, { title: note.title, description: note.description, path: notePath }));
+    }
+  } catch (err) {
+    console.warn(`[prerender-meta] couldn't fetch notes, skipping per-note meta: ${err.message}`);
+  }
+
   let roadmaps = [];
   try {
     const data = await fetchJson(`${API_BASE}/roadmaps`);

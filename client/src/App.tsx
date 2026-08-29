@@ -69,6 +69,8 @@ export default function App() {
         <Route path="/roadmaps" element={<Roadmaps />} />
         <Route path="/roadmaps/:slug" element={<RoadmapDetail />} />
         <Route path="/roadmaps/:roadmapSlug/:slug" element={<TopicDetail />} />
+        <Route path="/notes" element={<Notes />} />
+        <Route path="/notes/:slug" element={<NoteDetail />} />
         <Route path="/search" element={<Search />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />

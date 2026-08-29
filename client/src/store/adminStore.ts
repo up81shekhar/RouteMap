@@ -102,6 +102,12 @@ type AdminState = {
   /** true while retryConnection is actively trying to reach a possibly-sleeping backend */
   retrying: boolean;
   loaded: boolean;
+  /** true once real backend data has loaded successfully at least once this session.
+   *  Guards against a later transient network blip silently swapping real,
+   *  progress-bearing data for the offline demo catalog (which has
+   *  different node slugs) — that swap is what made completed progress
+   *  look like it "reset". */
+  hasEverConnected: boolean;
 
   loadRoadmaps: () => Promise<void>;
   /** Retries the API in the background after a cold-start-style failure, so the app

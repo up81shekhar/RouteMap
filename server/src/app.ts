@@ -16,6 +16,7 @@ import dashboardRoutes from "./modules/dashboard/dashboard.routes.js";
 import practiceRoutes from "./modules/practice/practice.routes.js";
 import sitemapRoutes from "./modules/sitemap/sitemap.routes.js";
 import institutionsRoutes from "./modules/institutions/institutions.routes.js";
+import notesRoutes from "./modules/notes/notes.routes.js";
 import adminRoutes from "./modules/admin/admin.routes.js";
 
 export const app = express();

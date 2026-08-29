@@ -95,4 +95,23 @@ const playlistImportSchema = z.object({
 });
 router.post("/import/playlist", validateBody(playlistImportSchema), playlistImportController.importPlaylist);
 
+// Notes library
+const noteSchema = z.object({
+  title: z.string().min(1),
+  description: z.string().min(1),
+  category: z.string().min(1),
+  content: z.string().default(""),
+  attachmentUrl: z.string().default(""),
+  attachmentType: z.enum(["pdf", "image", ""]).default(""),
+  order: z.number().default(0),
+});
+const noteUpdateSchema = noteSchema.partial();
+
+router.get("/notes", notesController.adminListNotes);
+router.get("/notes/:slug", notesController.adminGetNote);
+router.post("/notes", validateBody(noteSchema), notesController.createNote);
+router.put("/notes/:slug", validateBody(noteUpdateSchema), notesController.updateNote);
+router.patch("/notes/:slug/publish", notesController.togglePublishNote);
+router.delete("/notes/:slug", notesController.deleteNote);
+
 export default router;

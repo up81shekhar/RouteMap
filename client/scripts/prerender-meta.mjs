@@ -27,19 +27,24 @@ function escapeHtml(s) {
   return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 }
 
-function renderPage(template, { title, description, path }) {
+function renderPage(template, { title, description, path, noindex }) {
   const fullTitle = `${title} | RouteMap`;
   const canonical = `${SITE_URL}${path}`;
   let html = template;
   html = html.replace(/<title>.*?<\/title>/s, `<title>${escapeHtml(fullTitle)}</title>`);
   html = html.replace(/<meta name="description"[^>]*\/?>\n?/, "");
   html = html.replace(/<link rel="canonical"[^>]*\/?>\n?/, "");
-  const inject =
-    `    <meta name="description" content="${escapeHtml(description)}" />\n` +
-    `    <meta property="og:title" content="${escapeHtml(fullTitle)}" />\n` +
-    `    <meta property="og:description" content="${escapeHtml(description)}" />\n` +
-    `    <meta property="og:url" content="${canonical}" />\n` +
-    `    <link rel="canonical" href="${canonical}" />\n`;
+  const inject = noindex
+    ? // Private/gated pages: allow the crawl (robots.txt no longer blocks
+      // these) but tell it plainly not to index this one, right in the
+      // static HTML — no JS execution required to see this tag.
+      `    <meta name="robots" content="noindex, nofollow" />\n` +
+      `    <link rel="canonical" href="${canonical}" />\n`
+    : `    <meta name="description" content="${escapeHtml(description)}" />\n` +
+      `    <meta property="og:title" content="${escapeHtml(fullTitle)}" />\n` +
+      `    <meta property="og:description" content="${escapeHtml(description)}" />\n` +
+      `    <meta property="og:url" content="${canonical}" />\n` +
+      `    <link rel="canonical" href="${canonical}" />\n`;
   html = html.replace("</head>", `${inject}  </head>`);
   return html;
 }

@@ -297,19 +297,23 @@ export default function TopicDetail() {
             <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-card border border-success/30 bg-success/10 px-4 py-3 text-sm text-success">
               <span>Topic complete.</span>
               {nextNode ? (
-                <Link
-                  to={`/roadmaps/${roadmap.slug}/${nextNode.slug}`}
+                <a
+                  href={`/roadmaps/${roadmap.slug}/${nextNode.slug}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="rounded-full bg-success px-4 py-1.5 text-xs font-semibold text-white hover:opacity-90"
                 >
                   Next: {nextNode.title} →
-                </Link>
+                </a>
               ) : (
-                <Link
-                  to={`/roadmaps/${roadmap.slug}`}
+                <a
+                  href={`/roadmaps/${roadmap.slug}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="rounded-full bg-success px-4 py-1.5 text-xs font-semibold text-white hover:opacity-90"
                 >
                   You finished the line 🎉 View summary →
-                </Link>
+                </a>
               )}
             </div>
           )}

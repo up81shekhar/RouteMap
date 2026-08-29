@@ -67,12 +67,21 @@ async function fetchJson(url, timeoutMs = 20000) {
   }
 }
 
+const NOINDEX_ROUTES = ["/dashboard", "/login", "/signup", "/forgot-password", "/reset-password"];
+
 async function main() {
   if (!existsSync(TEMPLATE_PATH)) {
     console.warn("[prerender-meta] dist/index.html not found — run this after `vite build`. Skipping.");
     return;
   }
   const template = readFileSync(TEMPLATE_PATH, "utf-8");
+
+  // Private/gated pages — robots.txt now allows crawling them, so this
+  // static noindex tag is what actually keeps them out of search results
+  // (fixes the "indexed, though blocked by robots.txt" Search Console issue).
+  for (const path of NOINDEX_ROUTES) {
+    writePage(path, renderPage(template, { title: "RouteMap", description: "", path, noindex: true }));
+  }
 
   writePage(
     "/roadmaps",

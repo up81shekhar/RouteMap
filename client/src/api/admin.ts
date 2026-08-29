@@ -1,6 +1,41 @@
 import { apiFetch } from "./client";
 import { LineColor, RoadmapCategory, ResourceTag, ResourceType } from "../data/sampleRoadmaps";
 import { ApiRoadmap, ApiRoadmapNode, ApiResource } from "./roadmaps";
+import type { ApiNote } from "./notes";
+
+export type NoteInput = {
+  title: string;
+  description: string;
+  category: string;
+  content: string;
+  attachmentUrl: string;
+  attachmentType: "pdf" | "image" | "";
+  order: number;
+};
+
+export function adminListNotes(accessToken: string) {
+  return apiFetch<{ notes: ApiNote[] }>("/admin/notes", { accessToken });
+}
+
+export function adminGetNote(slug: string, accessToken: string) {
+  return apiFetch<{ note: ApiNote }>(`/admin/notes/${slug}`, { accessToken });
+}
+
+export function createNote(input: NoteInput, accessToken: string) {
+  return apiFetch<{ note: ApiNote }>("/admin/notes", { method: "POST", body: input, accessToken });
+}
+
+export function updateNote(slug: string, patch: Partial<NoteInput>, accessToken: string) {
+  return apiFetch<{ note: ApiNote }>(`/admin/notes/${slug}`, { method: "PUT", body: patch, accessToken });
+}
+
+export function toggleNotePublish(slug: string, accessToken: string) {
+  return apiFetch<{ note: ApiNote }>(`/admin/notes/${slug}/publish`, { method: "PATCH", accessToken });
+}
+
+export function deleteNote(slug: string, accessToken: string) {
+  return apiFetch<void>(`/admin/notes/${slug}`, { method: "DELETE", accessToken });
+}
 
 export type NewRoadmapInput = {
   title: string;

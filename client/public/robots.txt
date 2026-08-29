@@ -1,11 +1,6 @@
 User-agent: *
 Allow: /
 Disallow: /admin
-Disallow: /dashboard
-Disallow: /login
-Disallow: /signup
-Disallow: /forgot-password
-Disallow: /reset-password
 Disallow: /search
 
 Sitemap: https://routemap-free.vercel.app/sitemap.xml

@@ -89,7 +89,7 @@ export default function Dashboard() {
       </div>
 
       <aside className="space-y-6">
-        <AdSlot placement="roadmap_sidebar" />
+        <AdBannerSlot variant="sidebar" />
         <div className="rounded-card border border-border bg-surface p-4">
           <p className="station-code mb-2">This week</p>
           <p className="text-sm text-text-primary">{arraysCompleted.length} lessons</p>

@@ -223,10 +223,17 @@ export const useAdminStore = create<AdminState>()((set, get) => ({
         roadmaps: s.roadmaps.some((r) => r.slug === slug)
           ? s.roadmaps.map((r) => (r.slug === slug ? apiRoadmapToLocal(roadmap, localNodes) : r))
           : [...s.roadmaps, apiRoadmapToLocal(roadmap, localNodes)],
+        hasEverConnected: true,
       }));
     } catch (err) {
-      if (err instanceof ApiUnreachableError) set({ isOffline: true });
-      else throw err;
+      if (err instanceof ApiUnreachableError) {
+        // Only drop into offline/demo mode if we've never had real data —
+        // once real (progress-bearing) data has loaded, a transient blip
+        // here should not blow it away with the demo catalog's slugs.
+        if (!get().hasEverConnected) set({ isOffline: true });
+      } else {
+        throw err;
+      }
     }
   },
 

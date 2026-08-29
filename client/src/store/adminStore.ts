@@ -204,6 +204,7 @@ export const useAdminStore = create<AdminState>()((set, get) => ({
           }),
           isOffline: false,
           retrying: false,
+          hasEverConnected: true,
         }));
         return; // success — "Demo mode" disappears, and pages watching `isOffline` re-fetch their detail
       } catch {

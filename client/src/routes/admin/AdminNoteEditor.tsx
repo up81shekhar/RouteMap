@@ -1,4 +1,4 @@
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, ReactNode, useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useAuthStore } from "../../store/authStore";
 import * as adminApi from "../../api/admin";
@@ -132,7 +132,7 @@ export default function AdminNoteEditor() {
 
 const inputCls = "w-full rounded border border-border bg-surface px-3 py-2 text-sm";
 
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
+function Field({ label, children }: { label: string; children: ReactNode }) {
   return (
     <div>
       <label className="mb-1 block text-xs font-medium text-text-muted">{label}</label>

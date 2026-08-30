@@ -1,5 +1,5 @@
-import { useEffect } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { useAdminStore } from "../../store/adminStore";
 
 export default function AdminRoadmapList() {
@@ -7,6 +7,9 @@ export default function AdminRoadmapList() {
   const loadRoadmaps = useAdminStore((s) => s.loadRoadmaps);
   const togglePublish = useAdminStore((s) => s.togglePublish);
   const deleteRoadmap = useAdminStore((s) => s.deleteRoadmap);
+  const addRoadmap = useAdminStore((s) => s.addRoadmap);
+  const navigate = useNavigate();
+  const [settingUpPlacements, setSettingUpPlacements] = useState(false);
 
   useEffect(() => {
     void loadRoadmaps();
@@ -18,11 +21,45 @@ export default function AdminRoadmapList() {
     }
   }
 
+  // The navbar's "Placements" link always points at /roadmaps/placement-prep —
+  // it only 404s because that exact roadmap hasn't been created yet. This is
+  // a one-click, no-typos way to create it instead of relying on typing the
+  // title exactly right in the generic "New roadmap" form.
+  const hasPlacementsRoadmap = roadmaps.some((r) => r.slug === "placement-prep");
+
+  async function handleSetupPlacements() {
+    setSettingUpPlacements(true);
+    try {
+      const slug = await addRoadmap({
+        title: "Placement Prep",
+        description: "Interview prep, resume tips, and placement-focused practice — free and structured.",
+        difficulty: "Intermediate",
+        category: "skill",
+        color: "violet",
+        estimatedDurationHours: 20,
+        prerequisites: [],
+        careerOutcomes: [],
+      });
+      navigate(`/admin/roadmaps/${slug}`);
+    } finally {
+      setSettingUpPlacements(false);
+    }
+  }
+
   return (
     <div>
       <div className="mb-6 flex items-center justify-between">
         <h1 className="font-display text-2xl font-semibold">Roadmaps</h1>
         <div className="flex gap-2">
+          {!hasPlacementsRoadmap && (
+            <button
+              onClick={handleSetupPlacements}
+              disabled={settingUpPlacements}
+              className="rounded border border-accent px-4 py-2 text-sm font-medium text-accent hover:bg-accent hover:text-white disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {settingUpPlacements ? "Setting up…" : "Set up Placements page"}
+            </button>
+          )}
           <Link
             to="/admin/import-playlist"
             className="rounded border border-border px-4 py-2 text-sm font-medium text-text-primary hover:border-accent hover:text-accent"
@@ -37,6 +74,16 @@ export default function AdminRoadmapList() {
           </Link>
         </div>
       </div>
+
+      {!hasPlacementsRoadmap && (
+        <div className="mb-6 rounded-card border border-accent/30 bg-accent/5 p-4 text-sm">
+          <p className="font-medium text-text-primary">The navbar's "Placements" link isn't set up yet</p>
+          <p className="mt-1 text-text-muted">
+            It points to a roadmap that doesn't exist yet, so visitors get a 404. Click "Set up Placements page"
+            above to create it — you can add topics to it right after, same as any other roadmap.
+          </p>
+        </div>
+      )}
 
       <div className="overflow-hidden rounded-card border border-border">
         <table className="w-full text-sm">

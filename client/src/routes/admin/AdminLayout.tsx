@@ -4,6 +4,7 @@ import { useDocumentMeta } from "../../hooks/useDocumentMeta";
 const sections = [
   { to: "/admin", label: "Roadmaps", end: true },
   { to: "/admin/notes", label: "Notes", end: false },
+  { to: "/admin/institutions", label: "Institutions", end: false },
 ];
 
 export default function AdminLayout() {

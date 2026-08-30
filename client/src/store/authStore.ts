@@ -106,15 +106,30 @@ export const useAuthStore = create<AuthState>()(
       },
 
       hydrate: async () => {
-        if (get().isOffline) return;
+        // Deliberately does NOT bail out just because a PREVIOUS session
+        // ended with isOffline:true (that flag is persisted to
+        // localStorage) — always attempt a fresh fetch on app load. The old
+        // early-return here meant a student who once hit a cold backend
+        // stayed stuck on stale cached account data (e.g. an out-of-date
+        // institutionId) forever after, even once the backend was back —
+        // which is why the "join your college" prompt showed inconsistently
+        // between students.
         const storedRefreshToken = get().refreshToken;
         if (!storedRefreshToken) return;
         try {
           const { accessToken, refreshToken } = await authApi.refresh(storedRefreshToken);
           const user = await fetchMe(accessToken);
           set({ user, accessToken, refreshToken, isOffline: false });
-        } catch {
-          set({ user: null, accessToken: null, refreshToken: null });
+        } catch (err) {
+          if (err instanceof ApiUnreachableError) {
+            // Backend genuinely unreachable right now — note that, but keep
+            // whatever session/user data is already cached rather than
+            // wiping it; we'll retry for real next time hydrate runs.
+            set({ isOffline: true });
+            return;
+          }
+          // Refresh token itself is invalid/expired — this is a real logout.
+          set({ user: null, accessToken: null, refreshToken: null, isOffline: false });
         }
       },
 

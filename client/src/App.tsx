@@ -27,6 +27,8 @@ import AdminTopicPractice from "./routes/admin/AdminTopicPractice";
 import AdminPlaylistImport from "./routes/admin/AdminPlaylistImport";
 import AdminNotesList from "./routes/admin/AdminNotesList";
 import AdminNoteEditor from "./routes/admin/AdminNoteEditor";
+import AdminInstitutionsList from "./routes/admin/AdminInstitutionsList";
+import AdminInstitutionDetail from "./routes/admin/AdminInstitutionDetail";
 import Notes from "./routes/Notes";
 import NoteDetail from "./routes/NoteDetail";
 import CreateInstitution from "./routes/CreateInstitution";

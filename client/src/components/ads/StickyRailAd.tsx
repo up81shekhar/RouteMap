@@ -3,7 +3,7 @@ import { AD_SIZES, BannerFrame } from "./AdBannerSlot";
 
 /**
  * A skyscraper ad pinned to the left or right edge of the viewport. Only
- * shown on very wide screens (xl+, ~1280px) — below that, the ~1152px
+ * shown on very wide screens (2xl+, ~1536px) — below that, the ~1152px
  * centered content area doesn't leave enough real room on either side for
  * a 160px ad without overlapping or cramming the page. Dismissible so it
  * never feels forced on anyone who doesn't want it.
@@ -17,7 +17,7 @@ export default function StickyRailAd({ side = "right" }: { side?: "left" | "righ
 
   return (
     <div
-      className={`pointer-events-none fixed inset-y-0 ${positionClass} z-30 hidden w-[190px] items-center justify-center xl:flex`}
+      className={`pointer-events-none fixed inset-y-0 ${positionClass} z-30 hidden w-[190px] items-center justify-center 2xl:flex`}
     >
       <div className="pointer-events-auto relative rounded border border-border bg-surface p-2 shadow-lg">
         <button

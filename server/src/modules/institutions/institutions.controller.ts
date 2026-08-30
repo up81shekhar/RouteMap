@@ -57,10 +57,8 @@ export const joinInstitution = asyncHandler(async (req: Request, res: Response) 
   res.json({ institution: { name: institution.name, slug: institution.slug } });
 });
 
-export const getMyInstitutionDashboard = asyncHandler(async (req: Request, res: Response) => {
-  const institution = await Institution.findOne({ adminUserId: req.user!.id });
-  if (!institution) throw new ApiError(404, "No institution found for this account");
-
+/** Shared by the institution_admin's own dashboard and the platform-admin oversight view. */
+async function buildDashboardPayload(institution: InstanceType<typeof Institution>) {
   const students = await User.find({ institutionId: institution._id, role: "student" }).select(
     "name email createdAt"
   );
@@ -99,7 +97,7 @@ export const getMyInstitutionDashboard = asyncHandler(async (req: Request, res: 
     .map(([roadmapSlug, studentSet]) => ({ roadmapSlug, studentsEngaged: studentSet.size }))
     .sort((a, b) => b.studentsEngaged - a.studentsEngaged);
 
-  res.json({
+  return {
     institution: { name: institution.name, slug: institution.slug, joinCode: institution.joinCode },
     stats: {
       totalStudents: students.length,
@@ -108,5 +106,32 @@ export const getMyInstitutionDashboard = asyncHandler(async (req: Request, res: 
     },
     roadmapEngagement: roadmapEngagementList,
     students: studentSummaries.sort((a, b) => b.lessonsCompleted - a.lessonsCompleted),
-  });
+  };
+}
+
+export const getMyInstitutionDashboard = asyncHandler(async (req: Request, res: Response) => {
+  const institution = await Institution.findOne({ adminUserId: req.user!.id });
+  if (!institution) throw new ApiError(404, "No institution found for this account");
+  res.json(await buildDashboardPayload(institution));
+});
+
+// -------- Platform-admin oversight (mounted under /admin, requireAdmin) --------
+
+export const adminListInstitutions = asyncHandler(async (_req: Request, res: Response) => {
+  const institutions = await Institution.find({}).sort({ createdAt: -1 });
+  const withCounts = await Promise.all(
+    institutions.map(async (inst) => ({
+      name: inst.name,
+      slug: inst.slug,
+      joinCode: inst.joinCode,
+      studentCount: await User.countDocuments({ institutionId: inst._id, role: "student" }),
+    }))
+  );
+  res.json({ institutions: withCounts });
+});
+
+export const adminGetInstitutionDashboard = asyncHandler(async (req: Request, res: Response) => {
+  const institution = await Institution.findOne({ slug: req.params.slug });
+  if (!institution) throw new ApiError(404, "Institution not found");
+  res.json(await buildDashboardPayload(institution));
 });

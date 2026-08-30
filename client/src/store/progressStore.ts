@@ -58,6 +58,25 @@ export const useProgressStore = create<ProgressState>()(
           // offline or error — keep local progress as-is
         }
       },
+
+      syncAllFromServer: async () => {
+        const { accessToken, isOffline } = useAuthStore.getState();
+        if (!accessToken || isOffline) return;
+        try {
+          const { progress } = await progressApi.getProgress(accessToken); // no filters — everything for this user
+          set((state) => {
+            const merged = { ...state.completed };
+            for (const p of progress) {
+              const key = `${p.roadmapSlug}/${p.nodeSlug}`;
+              const local = merged[key] ?? [];
+              merged[key] = Array.from(new Set([...local, ...p.completedLessonIndices])).sort((a, b) => a - b);
+            }
+            return { completed: merged };
+          });
+        } catch {
+          // offline or error — keep whatever's already local
+        }
+      },
     }),
     { name: "routemap-progress" }
   )

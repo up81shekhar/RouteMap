@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { useAuthStore } from "../store/authStore";
 import * as institutionsApi from "../api/institutions";
 import type { InstitutionDashboard as InstitutionDashboardData } from "../api/institutions";
@@ -19,11 +19,19 @@ export default function InstitutionDashboard() {
 
   const user = useAuthStore((s) => s.user);
   const accessToken = useAuthStore((s) => s.accessToken);
+  const setSession = useAuthStore((s) => s.setSession);
+  const navigate = useNavigate();
 
   const [data, setData] = useState<InstitutionDashboardData | null>(null);
   const [status, setStatus] = useState<"loading" | "ready" | "error">("loading");
   const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+
+  // Self-service delete, gated behind an emailed OTP — mainly for a
+  // student who accidentally created an institution and wants it gone.
+  const [deleteStep, setDeleteStep] = useState<"idle" | "otp-sent" | "deleting">("idle");
+  const [otp, setOtp] = useState("");
+  const [deleteError, setDeleteError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!accessToken) {
@@ -59,6 +67,36 @@ export default function InstitutionDashboard() {
     void navigator.clipboard.writeText(data.institution.joinCode);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  }
+
+  async function handleRequestOtp() {
+    if (!accessToken) return;
+    setDeleteError(null);
+    try {
+      await institutionsApi.requestDeleteInstitutionOtp(accessToken);
+      setDeleteStep("otp-sent");
+    } catch (err) {
+      setDeleteError(err instanceof Error ? err.message : "Couldn't send the code — try again.");
+    }
+  }
+
+  async function handleConfirmDelete() {
+    if (!accessToken) return;
+    setDeleteStep("deleting");
+    setDeleteError(null);
+    try {
+      const { accessToken: newAccessToken } = await institutionsApi.confirmDeleteInstitution(otp, accessToken);
+      setSession(newAccessToken, {
+        name: user.name,
+        email: user.email,
+        role: "student",
+        institutionId: undefined,
+      });
+      navigate("/dashboard");
+    } catch (err) {
+      setDeleteStep("otp-sent");
+      setDeleteError(err instanceof Error ? err.message : "That code didn't work — check it and try again.");
+    }
   }
 
   return (
@@ -156,6 +194,59 @@ export default function InstitutionDashboard() {
                 </table>
               </div>
             )}
+          </div>
+
+          {/* Self-service delete — for a student who accidentally set one up.
+              Requires an emailed OTP so this can't happen by a stray click. */}
+          <div className="mt-14 rounded-card border border-error/30 p-4">
+            <p className="text-sm font-medium text-error">Danger zone</p>
+            <p className="mt-1 text-xs text-text-muted">
+              Made this institution by mistake? Deleting it unlinks every student and can't be undone.
+            </p>
+
+            {deleteStep === "idle" && (
+              <button
+                onClick={handleRequestOtp}
+                className="mt-3 rounded border border-error px-3 py-1.5 text-xs text-error hover:bg-error/10"
+              >
+                Delete this institution
+              </button>
+            )}
+
+            {deleteStep !== "idle" && (
+              <div className="mt-3 flex flex-wrap items-end gap-2">
+                <div>
+                  <label className="mb-1 block text-xs text-text-muted">
+                    Code sent to {user.email} — enter it to confirm
+                  </label>
+                  <input
+                    value={otp}
+                    onChange={(e) => setOtp(e.target.value)}
+                    maxLength={6}
+                    placeholder="6-digit code"
+                    className="w-36 rounded border border-border bg-surface px-2.5 py-1.5 text-sm font-mono tracking-widest"
+                  />
+                </div>
+                <button
+                  onClick={handleConfirmDelete}
+                  disabled={otp.length !== 6 || deleteStep === "deleting"}
+                  className="rounded bg-error px-3 py-1.5 text-xs font-semibold text-white hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  {deleteStep === "deleting" ? "Deleting…" : "Confirm delete"}
+                </button>
+                <button
+                  onClick={() => {
+                    setDeleteStep("idle");
+                    setOtp("");
+                    setDeleteError(null);
+                  }}
+                  className="rounded border border-border px-3 py-1.5 text-xs text-text-muted hover:text-text-primary"
+                >
+                  Cancel
+                </button>
+              </div>
+            )}
+            {deleteError && <p className="mt-2 text-xs text-error">{deleteError}</p>}
           </div>
         </>
       )}

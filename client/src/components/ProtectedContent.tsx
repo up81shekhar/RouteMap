@@ -1,15 +1,13 @@
 import { ReactNode, useEffect, useState } from "react";
-import { useAuthStore } from "../store/authStore";
 
 /**
- * Wraps note content with copy/print deterrents and a user-identifying
- * watermark. This does NOT and CANNOT block OS-level screenshots (Snipping
- * Tool, Cmd+Shift+4, phone screenshot buttons) — no website can. What this
- * does do: discourage casual copy/paste and printing, and make any leaked
- * copy traceable back to the account that viewed it via the watermark.
+ * Wraps note content with copy/print deterrents and a RouteMap watermark.
+ * This does NOT and CANNOT block OS-level screenshots (Snipping Tool,
+ * Cmd+Shift+4, phone screenshot buttons) — no website can. What this does
+ * do: discourage casual copy/paste and printing, and mark the content as
+ * belonging to RouteMap if it's ever screenshotted and shared.
  */
 export default function ProtectedContent({ children }: { children: ReactNode }) {
-  const user = useAuthStore((s) => s.user);
   const [blurred, setBlurred] = useState(false);
 
   useEffect(() => {

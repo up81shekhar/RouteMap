@@ -21,6 +21,13 @@ import adminRoutes from "./modules/admin/admin.routes.js";
 
 export const app = express();
 
+// Render (like most PaaS hosts) sits behind a reverse proxy, so the real
+// client IP arrives in X-Forwarded-For rather than the raw socket address.
+// Without this, express-rate-limit can't reliably tell users apart by IP —
+// in the worst case it buckets everyone behind Render's proxy together,
+// so one user's login attempts could rate-limit (429) everyone else too.
+app.set("trust proxy", 1);
+
 // CLIENT_ORIGIN can be a single URL or a comma-separated list (handy for
 // supporting both a production domain and Vercel preview deployments).
 // Trailing slashes are stripped before comparing, since "https://x.com" and

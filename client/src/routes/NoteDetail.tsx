@@ -109,7 +109,7 @@ export default function NoteDetail() {
           <ProtectedContent>
             <div
               ref={contentRef}
-              className="note-content prose prose-sm max-w-none p-5"
+              className="note-content max-w-none p-5"
               // Content is authored only by trusted admins via the admin panel — same trust
               // level as any other admin-entered content already rendered elsewhere in the app.
               dangerouslySetInnerHTML={{ __html: renderMarkdown(note.content) }}

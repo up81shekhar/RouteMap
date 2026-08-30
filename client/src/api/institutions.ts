@@ -37,3 +37,15 @@ export function joinInstitution(joinCode: string, accessToken: string) {
 export function getMyInstitutionDashboard(accessToken: string) {
   return apiFetch<InstitutionDashboard>("/institutions/me", { accessToken });
 }
+
+export function requestDeleteInstitutionOtp(accessToken: string) {
+  return apiFetch<{ ok: true }>("/institutions/me/delete/request-otp", { method: "POST", accessToken });
+}
+
+export function confirmDeleteInstitution(otp: string, accessToken: string) {
+  return apiFetch<{ ok: true; accessToken: string }>("/institutions/me/delete/confirm", {
+    method: "POST",
+    body: { otp },
+    accessToken,
+  });
+}

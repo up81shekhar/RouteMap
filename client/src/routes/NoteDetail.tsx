@@ -118,8 +118,9 @@ export default function NoteDetail() {
         </div>
       )}
 
-      {/* Second ad — between the written notes and the attachment, if both exist */}
-      {hasContent && hasAttachment && <AdBannerSlot variant="content" className="mt-8" />}
+      {/* Second ad — always after the written notes, not just when an attachment
+          follows too (most notes are text-only, so this was rarely showing before) */}
+      {hasContent && <AdBannerSlot variant="content" className="mt-8" />}
 
       {hasAttachment && (
         <div className="mt-8">

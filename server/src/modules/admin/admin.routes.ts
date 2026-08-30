@@ -115,4 +115,9 @@ router.put("/notes/:slug", validateBody(noteUpdateSchema), notesController.updat
 router.patch("/notes/:slug/publish", notesController.togglePublishNote);
 router.delete("/notes/:slug", notesController.deleteNote);
 
+// Institutions — platform-admin oversight (any admin account, not just the
+// institution's own owner, can browse every college and its dashboard)
+router.get("/institutions", institutionsController.adminListInstitutions);
+router.get("/institutions/:slug", institutionsController.adminGetInstitutionDashboard);
+
 export default router;

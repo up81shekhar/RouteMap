@@ -15,9 +15,26 @@ function StatCard({ label, value }: { label: string; value: number }) {
 
 export default function AdminInstitutionDetail() {
   const { slug } = useParams<{ slug: string }>();
+  const navigate = useNavigate();
   const accessToken = useAuthStore((s) => s.accessToken);
   const [data, setData] = useState<InstitutionDashboardData | null>(null);
   const [status, setStatus] = useState<"loading" | "ready" | "error">("loading");
+  const [deleting, setDeleting] = useState(false);
+
+  async function handleDelete() {
+    if (!accessToken || !slug || !data) return;
+    const confirmed = confirm(
+      `Delete "${data.institution.name}"? This unlinks all ${data.stats.totalStudents} of its students and can't be undone.`
+    );
+    if (!confirmed) return;
+    setDeleting(true);
+    try {
+      await adminApi.adminDeleteInstitution(slug, accessToken);
+      navigate("/admin/institutions");
+    } finally {
+      setDeleting(false);
+    }
+  }
 
   useEffect(() => {
     if (!accessToken || !slug) return;

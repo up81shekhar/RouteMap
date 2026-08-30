@@ -22,6 +22,21 @@ async function sendEmail(to: string, subject: string, html: string) {
   }
 }
 
+export async function sendInstitutionDeleteOtpEmail(to: string, institutionName: string, otp: string) {
+  await sendEmail(
+    to,
+    "Confirm deleting your institution on RouteMap",
+    `
+      <div style="font-family: sans-serif; max-width: 480px; margin: 0 auto;">
+        <h2 style="color: #111;">Delete "${institutionName}"?</h2>
+        <p style="color: #444;">Use this code to confirm deleting this institution. This removes it and unlinks every student from it — it can't be undone. The code expires in 10 minutes.</p>
+        <p style="margin: 24px 0; font-size: 28px; font-weight: 700; letter-spacing: 6px; color: #111;">${otp}</p>
+        <p style="color: #888; font-size: 13px;">If you didn't request this, you can safely ignore this email — nothing will be deleted.</p>
+      </div>
+    `
+  );
+}
+
 export async function sendPasswordResetEmail(to: string, resetUrl: string) {
   await sendEmail(
     to,

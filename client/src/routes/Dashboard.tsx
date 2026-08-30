@@ -221,7 +221,7 @@ export default function Dashboard() {
 
       <aside className="space-y-6">
         {/* Join-your-college prompt — only for students not already linked to one */}
-        {user.role === "student" && !user.institutionId && (
+        {user.role !== "institution_admin" && !user.institutionId && (
           <div className="rounded-card border border-border bg-surface p-4">
             <p className="font-display text-sm font-semibold">Join your college</p>
             <p className="mt-1 text-xs text-text-muted">

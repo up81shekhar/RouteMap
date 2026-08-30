@@ -10,6 +10,10 @@ type ProgressState = {
   getCompleted: (key: string) => number[];
   /** Pulls this topic's progress from the server and merges it in (server is source of truth when reachable). */
   syncFromServer: (roadmapSlug: string, nodeSlug: string) => Promise<void>;
+  /** Pulls EVERY topic's progress for this user in one call — used right after login/app-load so
+   *  the roadmap line view shows correct unlock state immediately, not just after a topic has
+   *  individually been opened once in this browser. */
+  syncAllFromServer: () => Promise<void>;
 };
 
 export const useProgressStore = create<ProgressState>()(

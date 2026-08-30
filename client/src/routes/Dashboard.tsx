@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, type FormEvent } from "react";
 import { Navigate, Link } from "react-router-dom";
 import { useAuthStore } from "../store/authStore";
 import { useProgressStore } from "../store/progressStore";
@@ -35,7 +35,7 @@ export default function Dashboard() {
   const [joinStatus, setJoinStatus] = useState<"idle" | "loading" | "error">("idle");
   const [joinError, setJoinError] = useState<string | null>(null);
 
-  async function handleJoinInstitution(e: React.FormEvent) {
+  async function handleJoinInstitution(e: FormEvent) {
     e.preventDefault();
     if (!accessToken) return;
     setJoinStatus("loading");

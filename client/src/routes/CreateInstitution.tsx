@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type FormEvent } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import { useAuthStore } from "../store/authStore";
 import * as institutionsApi from "../api/institutions";
@@ -20,7 +20,7 @@ export default function CreateInstitution() {
   if (!user) return <Navigate to="/login" replace />;
   if (user.role === "institution_admin") return <Navigate to="/institution" replace />;
 
-  async function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     if (!accessToken) {
       setStatus("error");

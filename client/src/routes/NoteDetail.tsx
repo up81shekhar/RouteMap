@@ -1,16 +1,17 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { marked } from "marked";
 import * as notesApi from "../api/notes";
 import type { ApiNote } from "../api/notes";
 import AdBannerSlot from "../components/ads/AdBannerSlot";
 import ProtectedContent from "../components/ProtectedContent";
 import { useDocumentMeta } from "../hooks/useDocumentMeta";
+import { renderMarkdown } from "../lib/markdown";
 
 export default function NoteDetail() {
   const { slug } = useParams<{ slug: string }>();
   const [note, setNote] = useState<ApiNote | null>(null);
   const [status, setStatus] = useState<"loading" | "ready" | "error">("loading");
+  const contentRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!slug) return;
@@ -37,6 +38,46 @@ export default function NoteDetail() {
     description: note?.description,
     path: `/notes/${slug ?? ""}`,
   });
+
+  // After the markdown HTML renders, decorate each code block LeetCode-style:
+  // a small language label and a working "Copy" button, top-right.
+  useEffect(() => {
+    const container = contentRef.current;
+    if (!container) return;
+    const blocks = container.querySelectorAll<HTMLPreElement>("pre");
+    const cleanups: Array<() => void> = [];
+
+    blocks.forEach((pre) => {
+      if (pre.dataset.enhanced) return;
+      pre.dataset.enhanced = "true";
+
+      const codeEl = pre.querySelector("code");
+      const langClass = codeEl?.className.match(/language-(\w+)/)?.[1];
+
+      if (langClass && langClass !== "plaintext") {
+        const label = document.createElement("span");
+        label.className = "code-lang-label";
+        label.textContent = langClass;
+        pre.appendChild(label);
+      }
+
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "code-copy-btn";
+      button.textContent = "Copy";
+      button.style.top = langClass && langClass !== "plaintext" ? "26px" : "8px";
+      const onClick = () => {
+        void navigator.clipboard.writeText(codeEl?.textContent ?? "");
+        button.textContent = "Copied!";
+        setTimeout(() => (button.textContent = "Copy"), 1500);
+      };
+      button.addEventListener("click", onClick);
+      cleanups.push(() => button.removeEventListener("click", onClick));
+      pre.appendChild(button);
+    });
+
+    return () => cleanups.forEach((fn) => fn());
+  }, [note?.content]);
 
   if (status === "loading") return <div className="container-page py-12 text-sm text-text-muted">Loading…</div>;
   if (status === "error" || !note)
@@ -67,10 +108,11 @@ export default function NoteDetail() {
         <div className="mt-8">
           <ProtectedContent>
             <div
-              className="prose prose-sm max-w-none p-5"
+              ref={contentRef}
+              className="note-content prose prose-sm max-w-none p-5"
               // Content is authored only by trusted admins via the admin panel — same trust
               // level as any other admin-entered content already rendered elsewhere in the app.
-              dangerouslySetInnerHTML={{ __html: marked.parse(note.content) as string }}
+              dangerouslySetInnerHTML={{ __html: renderMarkdown(note.content) }}
             />
           </ProtectedContent>
         </div>

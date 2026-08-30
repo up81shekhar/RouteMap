@@ -2,6 +2,17 @@ import { apiFetch } from "./client";
 import { LineColor, RoadmapCategory, ResourceTag, ResourceType } from "../data/sampleRoadmaps";
 import { ApiRoadmap, ApiRoadmapNode, ApiResource } from "./roadmaps";
 import type { ApiNote } from "./notes";
+import type { InstitutionDashboard } from "./institutions";
+
+export type AdminInstitutionSummary = { name: string; slug: string; joinCode: string; studentCount: number };
+
+export function adminListInstitutions(accessToken: string) {
+  return apiFetch<{ institutions: AdminInstitutionSummary[] }>("/admin/institutions", { accessToken });
+}
+
+export function adminGetInstitutionDashboard(slug: string, accessToken: string) {
+  return apiFetch<InstitutionDashboard>(`/admin/institutions/${slug}`, { accessToken });
+}
 
 export type NoteInput = {
   title: string;

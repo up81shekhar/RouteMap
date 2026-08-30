@@ -118,6 +118,18 @@ export default function TopicDetail() {
   // When set, the player shows this resource instead of the current lesson's video.
   const [viewingResourceId, setViewingResourceId] = useState<string | null>(null);
 
+  // Resume where the user left off instead of always opening at lesson 0.
+  // Runs once, after real lesson/progress data is available (that data can
+  // still be loading — from localStorage sync or the server — at first
+  // render), and never again, so it doesn't fight the user's own clicks.
+  const hasResumedRef = useRef(false);
+  useEffect(() => {
+    if (hasResumedRef.current || lessons.length === 0) return;
+    hasResumedRef.current = true;
+    const firstIncomplete = lessons.findIndex((_, i) => !completed.has(i));
+    setCurrentIndex(firstIncomplete === -1 ? lessons.length - 1 : firstIncomplete);
+  }, [lessons, completed]);
+
   const currentLesson = lessons[currentIndex];
   const maxUnlockedIndex = Math.min(completedArr.length, Math.max(lessons.length - 1, 0));
 

@@ -64,6 +64,60 @@
   @apply opacity-0;
 }
 
+/* Real typography spacing for note content — written by hand instead of
+   relying on the Tailwind Typography plugin, which isn't installed, so the
+   old `prose` class was silently doing nothing (that's why everything read
+   as one dense block). */
+.note-content h1 {
+  @apply mb-4 mt-8 font-display text-xl font-semibold text-text-primary first:mt-0;
+}
+.note-content h2 {
+  @apply mb-3 mt-8 font-display text-lg font-semibold text-text-primary first:mt-0;
+}
+.note-content h3 {
+  @apply mb-2 mt-6 font-display text-base font-semibold text-text-primary;
+}
+.note-content p {
+  @apply mb-4 leading-relaxed text-text-primary;
+}
+.note-content ul {
+  @apply mb-4 list-disc space-y-1.5 pl-6 text-text-primary;
+}
+.note-content ol {
+  @apply mb-4 list-decimal space-y-1.5 pl-6 text-text-primary;
+}
+.note-content li {
+  @apply leading-relaxed;
+}
+.note-content li > ul,
+.note-content li > ol {
+  @apply mb-0 mt-1.5;
+}
+.note-content blockquote {
+  @apply my-4 border-l-2 border-accent/50 pl-4 text-text-muted italic;
+}
+.note-content hr {
+  @apply my-8 border-border;
+}
+.note-content a {
+  @apply text-accent underline underline-offset-2 hover:text-accent-hover;
+}
+.note-content table {
+  @apply mb-4 w-full border-collapse overflow-hidden rounded-lg border border-border text-sm;
+}
+.note-content th {
+  @apply border border-border bg-surface px-3 py-2 text-left font-medium text-text-primary;
+}
+.note-content td {
+  @apply border border-border px-3 py-2 text-text-primary;
+}
+.note-content pre {
+  @apply mb-4;
+}
+.note-content strong {
+  @apply font-semibold text-text-primary;
+}
+
 @media (prefers-reduced-motion: reduce) {
   * {
     animation-duration: 0.01ms !important;

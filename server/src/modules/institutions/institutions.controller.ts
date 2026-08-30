@@ -5,6 +5,7 @@ import { User } from "../../models/User.js";
 import { UserProgress } from "../../models/UserProgress.js";
 import { asyncHandler, ApiError } from "../../utils/asyncHandler.js";
 import { issueTokens } from "../auth/auth.service.js";
+import { sendInstitutionDeleteOtpEmail } from "../../utils/email.js";
 
 function slugify(s: string) {
   return s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
@@ -12,6 +13,10 @@ function slugify(s: string) {
 
 function generateJoinCode() {
   return crypto.randomBytes(4).toString("hex").toUpperCase(); // e.g. "A1B2C3D4"
+}
+
+function hashOtp(otp: string) {
+  return crypto.createHash("sha256").update(otp).digest("hex");
 }
 
 // Any signed-in user can create an institution — they become its
@@ -71,11 +76,8 @@ async function buildDashboardPayload(institution: InstanceType<typeof Institutio
     progress.filter((p) => p.lastActivityAt && p.lastActivityAt > fourteenDaysAgo).map((p) => String(p.userId))
   );
 
-  // Per-student totals — we deliberately don't claim a "% complete" figure
-  // here, since that requires knowing each topic's total lesson count,
-  // which lives in the frontend's static content, not this database.
   const lessonsByStudent = new Map<string, number>();
-  const roadmapEngagement = new Map<string, Set<string>>(); // roadmapSlug -> set of student ids who've touched it
+  const roadmapEngagement = new Map<string, Set<string>>();
 
   for (const p of progress) {
     const uid = String(p.userId);
@@ -115,23 +117,101 @@ export const getMyInstitutionDashboard = asyncHandler(async (req: Request, res: 
   res.json(await buildDashboardPayload(institution));
 });
 
+/** Deletes an institution and cleans up everything tied to it — used by both the
+ *  self-service (OTP-verified) flow and the platform-admin delete endpoint. */
+async function deleteInstitutionCascade(institution: InstanceType<typeof Institution>) {
+  await User.updateMany({ institutionId: institution._id, role: "student" }, { $unset: { institutionId: "" } });
+  await User.findByIdAndUpdate(institution.adminUserId, {
+    role: "student",
+    $unset: { institutionId: "" },
+  });
+  await institution.deleteOne();
+}
+
+// -------- Self-service delete (institution_admin, own institution, OTP-verified) --------
+
+export const requestDeleteOtp = asyncHandler(async (req: Request, res: Response) => {
+  const institution = await Institution.findOne({ adminUserId: req.user!.id });
+  if (!institution) throw new ApiError(404, "No institution found for this account");
+
+  const otp = String(crypto.randomInt(100000, 999999));
+  institution.deleteOtpHash = hashOtp(otp);
+  institution.deleteOtpExpiresAt = new Date(Date.now() + 10 * 60 * 1000);
+  await institution.save();
+
+  const user = await User.findById(req.user!.id).select("email");
+  if (user) await sendInstitutionDeleteOtpEmail(user.email, institution.name, otp);
+
+  res.json({ ok: true });
+});
+
+export const confirmDelete = asyncHandler(async (req: Request, res: Response) => {
+  const { otp } = req.body;
+  const institution = await Institution.findOne({ adminUserId: req.user!.id });
+  if (!institution) throw new ApiError(404, "No institution found for this account");
+
+  if (
+    !institution.deleteOtpHash ||
+    !institution.deleteOtpExpiresAt ||
+    institution.deleteOtpExpiresAt < new Date() ||
+    institution.deleteOtpHash !== hashOtp(String(otp))
+  ) {
+    throw new ApiError(400, "That code is invalid or has expired — request a new one");
+  }
+
+  await deleteInstitutionCascade(institution);
+
+  // Role reverted to "student" server-side — reissue tokens so the client's
+  // session reflects that immediately.
+  const { accessToken, refreshToken } = issueTokens(req.user!.id, "student");
+  res.cookie("routemap_refresh", refreshToken, {
+    httpOnly: true,
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    secure: process.env.NODE_ENV === "production",
+    path: "/api/auth",
+    maxAge: 30 * 24 * 60 * 60 * 1000,
+  });
+  res.json({ ok: true, accessToken });
+});
+
 // -------- Platform-admin oversight (mounted under /admin, requireAdmin) --------
 
 export const adminListInstitutions = asyncHandler(async (_req: Request, res: Response) => {
   const institutions = await Institution.find({}).sort({ createdAt: -1 });
-  const withCounts = await Promise.all(
-    institutions.map(async (inst) => ({
-      name: inst.name,
-      slug: inst.slug,
-      joinCode: inst.joinCode,
-      studentCount: await User.countDocuments({ institutionId: inst._id, role: "student" }),
-    }))
+  const fourteenDaysAgo = new Date(Date.now() - 14 * 24 * 60 * 60 * 1000);
+
+  const withStats = await Promise.all(
+    institutions.map(async (inst) => {
+      const studentIds = await User.find({ institutionId: inst._id, role: "student" }).distinct("_id");
+      const activeCount = await UserProgress.countDocuments({
+        userId: { $in: studentIds },
+        lastActivityAt: { $gt: fourteenDaysAgo },
+      });
+      return {
+        id: String(inst._id),
+        name: inst.name,
+        slug: inst.slug,
+        joinCode: inst.joinCode,
+        studentCount: studentIds.length,
+        activeStudentCount: activeCount,
+        isActive: activeCount > 0,
+        createdAt: inst.createdAt,
+      };
+    })
   );
-  res.json({ institutions: withCounts });
+
+  res.json({ institutions: withStats });
 });
 
 export const adminGetInstitutionDashboard = asyncHandler(async (req: Request, res: Response) => {
   const institution = await Institution.findOne({ slug: req.params.slug });
   if (!institution) throw new ApiError(404, "Institution not found");
   res.json(await buildDashboardPayload(institution));
+});
+
+export const adminDeleteInstitution = asyncHandler(async (req: Request, res: Response) => {
+  const institution = await Institution.findOne({ slug: req.params.slug });
+  if (!institution) throw new ApiError(404, "Institution not found");
+  await deleteInstitutionCascade(institution);
+  res.json({ ok: true });
 });

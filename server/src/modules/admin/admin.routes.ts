@@ -8,6 +8,7 @@ import * as resourcesController from "../resources/resources.controller.js";
 import * as practiceController from "../practice/practice.controller.js";
 import * as playlistImportController from "./playlistImport.controller.js";
 import * as notesController from "../notes/notes.controller.js";
+import * as institutionsController from "../institutions/institutions.controller.js";
 
 const router = Router();
 

@@ -220,6 +220,39 @@ export default function Dashboard() {
       </div>
 
       <aside className="space-y-6">
+        {/* Join-your-college prompt — only for students not already linked to one */}
+        {user.role === "student" && !user.institutionId && (
+          <div className="rounded-card border border-border bg-surface p-4">
+            <p className="font-display text-sm font-semibold">Join your college</p>
+            <p className="mt-1 text-xs text-text-muted">
+              Got a join code from your college? Enter it here to link your account.
+            </p>
+            <form onSubmit={handleJoinInstitution} className="mt-3 space-y-2">
+              <input
+                required
+                value={joinCode}
+                onChange={(e) => setJoinCode(e.target.value.toUpperCase())}
+                placeholder="Join code"
+                className="w-full rounded border border-border bg-ink px-2.5 py-1.5 text-sm font-mono tracking-widest"
+              />
+              {joinError && <p className="text-xs text-error">{joinError}</p>}
+              <button
+                type="submit"
+                disabled={joinStatus === "loading"}
+                className="w-full rounded bg-accent px-3 py-1.5 text-xs font-semibold text-white hover:bg-accent-hover disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {joinStatus === "loading" ? "Joining…" : "Join"}
+              </button>
+            </form>
+            <p className="mt-3 text-xs text-text-faint">
+              Run a college or coaching center?{" "}
+              <Link to="/institution/create" className="text-accent hover:underline">
+                Set up your own
+              </Link>
+            </p>
+          </div>
+        )}
+
         <AdBannerSlot variant="sidebar" />
       </aside>
     </div>

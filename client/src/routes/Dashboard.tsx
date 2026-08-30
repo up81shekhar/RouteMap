@@ -26,8 +26,36 @@ export default function Dashboard() {
   useDocumentMeta({ title: "Dashboard", noindex: true, path: "/dashboard" });
 
   const user = useAuthStore((s) => s.user);
+  const accessToken = useAuthStore((s) => s.accessToken);
+  const setSession = useAuthStore((s) => s.setSession);
   const completed = useProgressStore((s) => s.completed);
   const roadmaps = useAdminStore((s) => s.roadmaps);
+
+  const [joinCode, setJoinCode] = useState("");
+  const [joinStatus, setJoinStatus] = useState<"idle" | "loading" | "error">("idle");
+  const [joinError, setJoinError] = useState<string | null>(null);
+
+  async function handleJoinInstitution(e: React.FormEvent) {
+    e.preventDefault();
+    if (!accessToken) return;
+    setJoinStatus("loading");
+    setJoinError(null);
+    try {
+      await institutionsApi.joinInstitution(joinCode, accessToken);
+      const { user: freshUser } = await authApi.me(accessToken);
+      setSession(accessToken, {
+        name: freshUser.name,
+        email: freshUser.email,
+        role: freshUser.role,
+        institutionId: freshUser.institutionId,
+      });
+      setJoinStatus("idle");
+      setJoinCode("");
+    } catch (err) {
+      setJoinStatus("error");
+      setJoinError(err instanceof Error ? err.message : "That join code didn't work — check it and try again.");
+    }
+  }
 
   // Real progress, computed per roadmap from actual completed-lesson data —
   // not a hardcoded "dsa/arrays" stand-in.

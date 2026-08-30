@@ -9,7 +9,8 @@ export default function Shell({ children }: { children: ReactNode }) {
       <Nav />
       <main className="flex-1">{children}</main>
       <Footer />
-      <StickyRailAd />
+      <StickyRailAd side="right" />
+      <StickyRailAd side="left" />
     </div>
   );
 }

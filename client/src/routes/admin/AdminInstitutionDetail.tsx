@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useAuthStore } from "../../store/authStore";
 import * as adminApi from "../../api/admin";
 import type { InstitutionDashboard as InstitutionDashboardData } from "../../api/institutions";

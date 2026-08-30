@@ -14,4 +14,14 @@ router.post("/", requireAuth, validateBody(createSchema), controller.createInsti
 router.post("/join", requireAuth, validateBody(joinSchema), controller.joinInstitution);
 router.get("/me", requireAuth, requireInstitutionAdmin, controller.getMyInstitutionDashboard);
 
+const otpSchema = z.object({ otp: z.string().length(6) });
+router.post("/me/delete/request-otp", requireAuth, requireInstitutionAdmin, controller.requestDeleteOtp);
+router.post(
+  "/me/delete/confirm",
+  requireAuth,
+  requireInstitutionAdmin,
+  validateBody(otpSchema),
+  controller.confirmDelete
+);
+
 export default router;

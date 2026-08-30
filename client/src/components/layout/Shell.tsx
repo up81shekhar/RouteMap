@@ -1,7 +1,6 @@
 import { ReactNode } from "react";
 import Nav from "./Nav";
 import Footer from "./Footer";
-import StickyRailAd from "../ads/StickyRailAd";
 
 export default function Shell({ children }: { children: ReactNode }) {
   return (
@@ -9,8 +8,6 @@ export default function Shell({ children }: { children: ReactNode }) {
       <Nav />
       <main className="flex-1">{children}</main>
       <Footer />
-      <StickyRailAd side="right" />
-      <StickyRailAd side="left" />
     </div>
   );
 }

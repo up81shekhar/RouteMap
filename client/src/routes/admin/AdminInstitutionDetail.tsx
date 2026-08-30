@@ -58,10 +58,23 @@ export default function AdminInstitutionDetail() {
 
       {status === "ready" && data && (
         <>
-          <h1 className="font-display text-2xl font-semibold">{data.institution.name}</h1>
-          {data.institution.joinCode && (
-            <p className="mt-1 font-mono text-xs text-text-faint">Join code: {data.institution.joinCode}</p>
-          )}
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <h1 className="font-display text-2xl font-semibold">{data.institution.name}</h1>
+              {data.institution.joinCode && (
+                <p className="mt-1 font-mono text-xs text-text-faint">
+                  ID: {data.institution.slug} · Join code: {data.institution.joinCode}
+                </p>
+              )}
+            </div>
+            <button
+              onClick={handleDelete}
+              disabled={deleting}
+              className="rounded border border-error px-3 py-1.5 text-sm text-error hover:bg-error/10 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {deleting ? "Deleting…" : "Delete institution"}
+            </button>
+          </div>
 
           <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
             <StatCard label="Total students" value={data.stats.totalStudents} />

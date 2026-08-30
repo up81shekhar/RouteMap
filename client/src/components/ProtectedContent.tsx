@@ -21,7 +21,7 @@ export default function ProtectedContent({ children }: { children: ReactNode }) 
     };
   }, []);
 
-  const watermarkText = user ? `${user.name} • ${user.email}` : "RouteMap";
+  const watermarkText = "RouteMap · routemap-free.vercel.app";
 
   return (
     <div

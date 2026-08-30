@@ -4,7 +4,16 @@ import { ApiRoadmap, ApiRoadmapNode, ApiResource } from "./roadmaps";
 import type { ApiNote } from "./notes";
 import type { InstitutionDashboard } from "./institutions";
 
-export type AdminInstitutionSummary = { name: string; slug: string; joinCode: string; studentCount: number };
+export type AdminInstitutionSummary = {
+  id: string;
+  name: string;
+  slug: string;
+  joinCode: string;
+  studentCount: number;
+  activeStudentCount: number;
+  isActive: boolean;
+  createdAt: string;
+};
 
 export function adminListInstitutions(accessToken: string) {
   return apiFetch<{ institutions: AdminInstitutionSummary[] }>("/admin/institutions", { accessToken });
@@ -12,6 +21,10 @@ export function adminListInstitutions(accessToken: string) {
 
 export function adminGetInstitutionDashboard(slug: string, accessToken: string) {
   return apiFetch<InstitutionDashboard>(`/admin/institutions/${slug}`, { accessToken });
+}
+
+export function adminDeleteInstitution(slug: string, accessToken: string) {
+  return apiFetch<{ ok: true }>(`/admin/institutions/${slug}`, { method: "DELETE", accessToken });
 }
 
 export type NoteInput = {

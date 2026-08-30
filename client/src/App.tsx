@@ -33,10 +33,12 @@ import CreateInstitution from "./routes/CreateInstitution";
 import InstitutionDashboard from "./routes/InstitutionDashboard";
 import { useAuthStore } from "./store/authStore";
 import { useAdminStore } from "./store/adminStore";
+import { useProgressStore } from "./store/progressStore";
 import { initAnalytics, trackPageview } from "./lib/analytics";
 
 export default function App() {
   const location = useLocation();
+  const accessToken = useAuthStore((s) => s.accessToken);
 
   useEffect(() => {
     // Try to restore a session from the refresh cookie, then load the
@@ -46,6 +48,15 @@ export default function App() {
     void useAdminStore.getState().loadRoadmaps();
     initAnalytics();
   }, []);
+
+  useEffect(() => {
+    // Pull ALL of this user's progress the moment we have a session — on a
+    // fresh login, on a restored session after closing the browser, or on a
+    // brand-new device. Without this, the roadmap line view only knew about
+    // progress for topics that had individually been opened in THIS
+    // browser, so everything else looked locked/reset until visited again.
+    if (accessToken) void useProgressStore.getState().syncAllFromServer();
+  }, [accessToken]);
 
   useEffect(() => {
     // GA4 doesn't know about client-side navigation on its own — fire a

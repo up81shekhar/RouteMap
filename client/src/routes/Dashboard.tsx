@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { Navigate, Link } from "react-router-dom";
 import { useAuthStore } from "../store/authStore";
 import { useProgressStore } from "../store/progressStore";
@@ -6,6 +6,8 @@ import { useAdminStore } from "../store/adminStore";
 import { getStaticTopicContent } from "../data/sampleRoadmaps";
 import AdBannerSlot from "../components/ads/AdBannerSlot";
 import { useDocumentMeta } from "../hooks/useDocumentMeta";
+import * as institutionsApi from "../api/institutions";
+import * as authApi from "../api/auth";
 
 const colorHex: Record<string, string> = { coral: "#FF6B4A", teal: "#38BDF8", violet: "#6366F1", amber: "#E0A82E" };
 

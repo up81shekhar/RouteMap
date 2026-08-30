@@ -75,6 +75,11 @@ export default function Nav() {
                   Admin
                 </Link>
               )}
+              {user.role === "institution_admin" && (
+                <Link to="/institution" className="text-sm text-text-muted hover:text-text-primary">
+                  College
+                </Link>
+              )}
               <Link to="/dashboard" className="text-sm text-text-muted hover:text-text-primary">
                 Dashboard
               </Link>

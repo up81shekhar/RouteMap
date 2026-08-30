@@ -33,6 +33,37 @@
   }
 }
 
+/* LeetCode-style code blocks for note content: dark, monospace, rounded,
+   with a small language label + copy button injected via ProtectedContent's
+   note-code-block enhancement. */
+.note-content pre {
+  @apply relative overflow-x-auto rounded-lg bg-[#282c34] p-4 text-[13px] leading-relaxed;
+}
+
+.note-content pre code.hljs {
+  @apply bg-transparent p-0 font-mono;
+}
+
+.note-content :not(pre) > code {
+  @apply rounded bg-surface px-1.5 py-0.5 font-mono text-[13px] text-accent;
+}
+
+.note-content .code-lang-label {
+  @apply absolute right-3 top-2 select-none font-mono text-[10px] uppercase tracking-wide text-white/40;
+}
+
+.note-content .code-copy-btn {
+  @apply absolute right-3 top-2 rounded border border-white/20 bg-white/10 px-2 py-0.5 font-mono text-[10px] text-white/70 transition hover:bg-white/20 hover:text-white;
+}
+
+.note-content pre:hover .code-copy-btn {
+  @apply opacity-100;
+}
+
+.note-content .code-copy-btn {
+  @apply opacity-0;
+}
+
 @media (prefers-reduced-motion: reduce) {
   * {
     animation-duration: 0.01ms !important;

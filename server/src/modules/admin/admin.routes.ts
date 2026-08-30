@@ -119,5 +119,6 @@ router.delete("/notes/:slug", notesController.deleteNote);
 // institution's own owner, can browse every college and its dashboard)
 router.get("/institutions", institutionsController.adminListInstitutions);
 router.get("/institutions/:slug", institutionsController.adminGetInstitutionDashboard);
+router.delete("/institutions/:slug", institutionsController.adminDeleteInstitution);
 
 export default router;

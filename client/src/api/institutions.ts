@@ -1,4 +1,5 @@
 import { apiFetch } from "./client";
+import type { ApiNote } from "./notes";
 
 export type InstitutionSummary = { name: string; slug: string; joinCode?: string };
 
@@ -48,4 +49,50 @@ export function confirmDeleteInstitution(otp: string, accessToken: string) {
     body: { otp },
     accessToken,
   });
+}
+
+export function removeStudent(studentId: string, accessToken: string) {
+  return apiFetch<{ ok: true }>(`/institutions/me/students/${studentId}`, { method: "DELETE", accessToken });
+}
+
+export function sendNotice(subject: string, message: string, accessToken: string) {
+  return apiFetch<{ ok: true; sentTo: number }>("/institutions/me/notices", {
+    method: "POST",
+    body: { subject, message },
+    accessToken,
+  });
+}
+
+export type MyNoteInput = {
+  title: string;
+  description: string;
+  category: string;
+  content: string;
+  attachmentUrl: string;
+  attachmentType: "pdf" | "image" | "";
+  order: number;
+};
+
+export function listMyNotes(accessToken: string) {
+  return apiFetch<{ notes: ApiNote[] }>("/institutions/me/notes", { accessToken });
+}
+
+export function createMyNote(input: MyNoteInput, accessToken: string) {
+  return apiFetch<{ note: ApiNote }>("/institutions/me/notes", { method: "POST", body: input, accessToken });
+}
+
+export function updateMyNote(slug: string, patch: Partial<MyNoteInput>, accessToken: string) {
+  return apiFetch<{ note: ApiNote }>(`/institutions/me/notes/${slug}`, {
+    method: "PUT",
+    body: patch,
+    accessToken,
+  });
+}
+
+export function toggleMyNotePublish(slug: string, accessToken: string) {
+  return apiFetch<{ note: ApiNote }>(`/institutions/me/notes/${slug}/publish`, { method: "PATCH", accessToken });
+}
+
+export function deleteMyNote(slug: string, accessToken: string) {
+  return apiFetch<{ ok: true }>(`/institutions/me/notes/${slug}`, { method: "DELETE", accessToken });
 }

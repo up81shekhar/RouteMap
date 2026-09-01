@@ -21,7 +21,7 @@ export default function Notes() {
   useEffect(() => {
     let cancelled = false;
     notesApi
-      .listNotes()
+      .listNotes(accessToken ?? undefined)
       .then(({ notes }) => {
         if (!cancelled) {
           setNotes(notes);
@@ -34,7 +34,7 @@ export default function Notes() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [accessToken]);
 
   const categories = Array.from(new Set(notes.map((n) => n.category)));
 

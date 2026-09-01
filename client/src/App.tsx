@@ -33,6 +33,8 @@ import Notes from "./routes/Notes";
 import NoteDetail from "./routes/NoteDetail";
 import CreateInstitution from "./routes/CreateInstitution";
 import InstitutionDashboard from "./routes/InstitutionDashboard";
+import InstitutionNotesList from "./routes/InstitutionNotesList";
+import InstitutionNoteEditor from "./routes/InstitutionNoteEditor";
 import { useAuthStore } from "./store/authStore";
 import { useAdminStore } from "./store/adminStore";
 import { useProgressStore } from "./store/progressStore";

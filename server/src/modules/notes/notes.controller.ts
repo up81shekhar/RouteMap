@@ -5,16 +5,32 @@ import { slugify } from "../../utils/slugify.js";
 
 // -------- Public --------
 
-export const listNotes = asyncHandler(async (_req: Request, res: Response) => {
-  const notes = await Note.find({ isPublished: true }).sort({ order: 1, createdAt: -1 });
+export const listNotes = asyncHandler(async (req: Request, res: Response) => {
+  // Public notes, plus this user's own institution's private notes if they belong to one.
+  const visibility = req.user?.role === "student" || req.user?.role === "institution_admin"
+    ? [{ institutionId: null }, ...(req.user ? [{ institutionId: (await getUserInstitutionId(req.user.id)) }] : [])]
+    : [{ institutionId: null }];
+  const notes = await Note.find({ isPublished: true, $or: visibility }).sort({ order: 1, createdAt: -1 });
   res.json({ notes });
 });
 
 export const getNote = asyncHandler(async (req: Request, res: Response) => {
   const note = await Note.findOne({ slug: req.params.slug, isPublished: true });
   if (!note) throw new ApiError(404, "Note not found");
+  if (note.institutionId) {
+    const myInstitutionId = req.user ? await getUserInstitutionId(req.user.id) : null;
+    if (!myInstitutionId || String(myInstitutionId) !== String(note.institutionId)) {
+      throw new ApiError(404, "Note not found");
+    }
+  }
   res.json({ note });
 });
+
+async function getUserInstitutionId(userId: string) {
+  const { User } = await import("../../models/User.js");
+  const user = await User.findById(userId).select("institutionId");
+  return user?.institutionId ?? null;
+}
 
 // -------- Admin --------
 

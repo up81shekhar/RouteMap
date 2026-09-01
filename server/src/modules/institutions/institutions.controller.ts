@@ -5,7 +5,7 @@ import { User } from "../../models/User.js";
 import { UserProgress } from "../../models/UserProgress.js";
 import { asyncHandler, ApiError } from "../../utils/asyncHandler.js";
 import { issueTokens } from "../auth/auth.service.js";
-import { sendInstitutionDeleteOtpEmail, sendInstitutionNoticeEmail } from "../../utils/email.js";
+import { sendInstitutionDeleteOtpEmail, sendInstitutionNoticeEmail, sendInstitutionInviteEmail } from "../../utils/email.js";
 import { Note } from "../../models/Note.js";
 
 function slugify(s: string) {
@@ -187,6 +187,52 @@ export const removeStudent = asyncHandler(async (req: Request, res: Response) =>
   await User.findByIdAndUpdate(student._id, { $unset: { institutionId: "" } });
   res.json({ ok: true });
 });
+
+// -------- Invite a specific student by email --------
+
+export const inviteStudent = asyncHandler(async (req: Request, res: Response) => {
+  const { email } = req.body;
+  const institution = await Institution.findOne({ adminUserId: req.user!.id });
+  if (!institution) throw new ApiError(404, "No institution found for this account");
+
+  const existingUser = await User.findOne({ email: String(email).toLowerCase() });
+  if (existingUser?.institutionId) {
+    throw new ApiError(409, "That email is already linked to an institution");
+  }
+
+  await sendInstitutionInviteEmail(email, institution.name, institution.joinCode, Boolean(existingUser));
+  res.json({ ok: true });
+});
+
+// -------- Per-student detail (per-roadmap breakdown) --------
+
+export const getStudentDetail = asyncHandler(async (req: Request, res: Response) => {
+  const institution = await Institution.findOne({ adminUserId: req.user!.id });
+  if (!institution) throw new ApiError(404, "No institution found for this account");
+
+  const student = await User.findOne({ _id: req.params.studentId, institutionId: institution._id }).select(
+    "name email createdAt"
+  );
+  if (!student) throw new ApiError(404, "Student not found in this institution");
+
+  const progress = await UserProgress.find({ userId: student._id });
+  const byRoadmap = new Map<string, { lessonsCompleted: number; lastActivityAt: Date | null }>();
+  for (const p of progress) {
+    const existing = byRoadmap.get(p.roadmapSlug) ?? { lessonsCompleted: 0, lastActivityAt: null };
+    existing.lessonsCompleted += p.completedLessonIndices.length;
+    if (!existing.lastActivityAt || (p.lastActivityAt && p.lastActivityAt > existing.lastActivityAt)) {
+      existing.lastActivityAt = p.lastActivityAt ?? null;
+    }
+    byRoadmap.set(p.roadmapSlug, existing);
+  }
+
+  res.json({
+    student: { id: student._id, name: student.name, email: student.email, joinedAt: student.createdAt },
+    roadmaps: Array.from(byRoadmap.entries()).map(([roadmapSlug, v]) => ({ roadmapSlug, ...v })),
+  });
+});
+
+// -------- Notices (emailed to every current student) --------
 
 // -------- Notices (emailed to every current student) --------
 

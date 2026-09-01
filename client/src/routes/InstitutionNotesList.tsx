@@ -42,15 +42,15 @@ export default function InstitutionNotesList() {
   return (
     <div className="container-page py-12">
       <p className="station-code mb-2">
-        <Link to="/institution" className="hover:text-text-primary">College dashboard</Link> / Private notes
+        <Link to="/institution" className="hover:text-text-primary">College dashboard</Link> / Class notes
       </p>
       <div className="flex items-center justify-between">
-        <h1 className="font-display text-2xl font-semibold">Private notes</h1>
+        <h1 className="font-display text-2xl font-semibold">Class notes</h1>
         <Link
           to="/institution/notes/new"
           className="rounded bg-accent px-4 py-2 text-sm font-medium text-white hover:bg-accent-hover"
         >
-          + New private note
+          + New class note
         </Link>
       </div>
       <p className="mt-2 text-sm text-text-muted">

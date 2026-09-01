@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useEffect, useState, type FormEvent } from "react";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { useAuthStore } from "../store/authStore";
 import * as institutionsApi from "../api/institutions";
 import type { InstitutionDashboard as InstitutionDashboardData } from "../api/institutions";
@@ -26,6 +26,13 @@ export default function InstitutionDashboard() {
   const [status, setStatus] = useState<"loading" | "ready" | "error">("loading");
   const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+  const [removingId, setRemovingId] = useState<string | null>(null);
+
+  // Notice broadcast
+  const [noticeSubject, setNoticeSubject] = useState("");
+  const [noticeMessage, setNoticeMessage] = useState("");
+  const [noticeStatus, setNoticeStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
+  const [noticeError, setNoticeError] = useState<string | null>(null);
 
   // Self-service delete, gated behind an emailed OTP — mainly for a
   // student who accidentally created an institution and wants it gone.
@@ -33,30 +40,27 @@ export default function InstitutionDashboard() {
   const [otp, setOtp] = useState("");
   const [deleteError, setDeleteError] = useState<string | null>(null);
 
+  function refresh() {
+    if (!accessToken) return;
+    institutionsApi
+      .getMyInstitutionDashboard(accessToken)
+      .then((res) => {
+        setData(res);
+        setStatus("ready");
+      })
+      .catch((err) => {
+        setError(err instanceof Error ? err.message : "Couldn't load the dashboard.");
+        setStatus("error");
+      });
+  }
+
   useEffect(() => {
     if (!accessToken) {
       setStatus("error");
       setError("This dashboard needs a live connection to the server.");
       return;
     }
-    let cancelled = false;
-    institutionsApi
-      .getMyInstitutionDashboard(accessToken)
-      .then((res) => {
-        if (!cancelled) {
-          setData(res);
-          setStatus("ready");
-        }
-      })
-      .catch((err) => {
-        if (!cancelled) {
-          setError(err instanceof Error ? err.message : "Couldn't load the dashboard.");
-          setStatus("error");
-        }
-      });
-    return () => {
-      cancelled = true;
-    };
+    refresh();
   }, [accessToken]);
 
   if (!user) return <Navigate to="/login" replace />;
@@ -67,6 +71,35 @@ export default function InstitutionDashboard() {
     void navigator.clipboard.writeText(data.institution.joinCode);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  }
+
+  async function handleRemoveStudent(studentId: string, name: string) {
+    if (!accessToken) return;
+    if (!confirm(`Remove ${name} from this institution? They keep their RouteMap account either way.`)) return;
+    setRemovingId(studentId);
+    try {
+      await institutionsApi.removeStudent(studentId, accessToken);
+      refresh();
+    } finally {
+      setRemovingId(null);
+    }
+  }
+
+  async function handleSendNotice(e: FormEvent) {
+    e.preventDefault();
+    if (!accessToken) return;
+    setNoticeStatus("sending");
+    setNoticeError(null);
+    try {
+      await institutionsApi.sendNotice(noticeSubject, noticeMessage, accessToken);
+      setNoticeStatus("sent");
+      setNoticeSubject("");
+      setNoticeMessage("");
+      setTimeout(() => setNoticeStatus("idle"), 3000);
+    } catch (err) {
+      setNoticeStatus("error");
+      setNoticeError(err instanceof Error ? err.message : "Couldn't send that notice — try again.");
+    }
   }
 
   async function handleRequestOtp() {
@@ -86,12 +119,7 @@ export default function InstitutionDashboard() {
     setDeleteError(null);
     try {
       const { accessToken: newAccessToken } = await institutionsApi.confirmDeleteInstitution(otp, accessToken);
-      setSession(newAccessToken, {
-        name: user.name,
-        email: user.email,
-        role: "student",
-        institutionId: undefined,
-      });
+      setSession(newAccessToken, { name: user.name, email: user.email, role: "student", institutionId: undefined });
       navigate("/dashboard");
     } catch (err) {
       setDeleteStep("otp-sent");
@@ -111,22 +139,30 @@ export default function InstitutionDashboard() {
               <p className="station-code mb-2">College dashboard</p>
               <h1 className="font-display text-2xl font-semibold">{data.institution.name}</h1>
             </div>
-            {data.institution.joinCode && (
-              <div className="rounded-card border border-border bg-surface px-4 py-3">
-                <p className="text-xs text-text-muted">Share this join code with students</p>
-                <div className="mt-1 flex items-center gap-3">
-                  <span className="font-mono text-lg font-semibold tracking-widest">
-                    {data.institution.joinCode}
-                  </span>
-                  <button
-                    onClick={copyJoinCode}
-                    className="rounded border border-border px-2.5 py-1 text-xs text-text-muted hover:border-border-strong hover:text-text-primary"
-                  >
-                    {copied ? "Copied!" : "Copy"}
-                  </button>
+            <div className="flex items-center gap-3">
+              <Link
+                to="/institution/notes"
+                className="rounded border border-border px-4 py-2 text-sm text-text-primary hover:border-accent hover:text-accent"
+              >
+                Private notes
+              </Link>
+              {data.institution.joinCode && (
+                <div className="rounded-card border border-border bg-surface px-4 py-3">
+                  <p className="text-xs text-text-muted">Share this join code with students</p>
+                  <div className="mt-1 flex items-center gap-3">
+                    <span className="font-mono text-lg font-semibold tracking-widest">
+                      {data.institution.joinCode}
+                    </span>
+                    <button
+                      onClick={copyJoinCode}
+                      className="rounded border border-border px-2.5 py-1 text-xs text-text-muted hover:border-border-strong hover:text-text-primary"
+                    >
+                      {copied ? "Copied!" : "Copy"}
+                    </button>
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
+            </div>
           </div>
 
           <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-3">
@@ -152,6 +188,37 @@ export default function InstitutionDashboard() {
             </div>
           )}
 
+          {/* Notice broadcast — emailed to every current student */}
+          <div className="mt-10">
+            <p className="station-code mb-3">Send a notice</p>
+            <form onSubmit={handleSendNotice} className="max-w-xl space-y-3 rounded-card border border-border bg-surface p-4">
+              <input
+                required
+                value={noticeSubject}
+                onChange={(e) => setNoticeSubject(e.target.value)}
+                placeholder="Subject"
+                className="w-full rounded border border-border bg-ink px-3 py-2 text-sm"
+              />
+              <textarea
+                required
+                value={noticeMessage}
+                onChange={(e) => setNoticeMessage(e.target.value)}
+                rows={4}
+                placeholder="Message — emailed to every current student"
+                className="w-full rounded border border-border bg-ink px-3 py-2 text-sm"
+              />
+              {noticeError && <p className="text-xs text-error">{noticeError}</p>}
+              {noticeStatus === "sent" && <p className="text-xs text-success">Sent!</p>}
+              <button
+                type="submit"
+                disabled={noticeStatus === "sending"}
+                className="rounded bg-accent px-4 py-1.5 text-sm font-medium text-white hover:bg-accent-hover disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {noticeStatus === "sending" ? "Sending…" : "Send to all students"}
+              </button>
+            </form>
+          </div>
+
           <div className="mt-10">
             <p className="station-code mb-3">Students ({data.students.length})</p>
             {data.students.length === 0 ? (
@@ -168,6 +235,7 @@ export default function InstitutionDashboard() {
                       <th className="px-4 py-3 font-medium">Joined</th>
                       <th className="px-4 py-3 font-medium">Lessons completed</th>
                       <th className="px-4 py-3 font-medium">Status</th>
+                      <th className="px-4 py-3 font-medium"></th>
                     </tr>
                   </thead>
                   <tbody>
@@ -187,6 +255,15 @@ export default function InstitutionDashboard() {
                           >
                             {s.isActive ? "Active" : "Inactive"}
                           </span>
+                        </td>
+                        <td className="px-4 py-3 text-right">
+                          <button
+                            onClick={() => handleRemoveStudent(String(s.id), s.name)}
+                            disabled={removingId === String(s.id)}
+                            className="rounded border border-border px-2.5 py-1 text-xs text-error hover:border-error disabled:cursor-not-allowed disabled:opacity-60"
+                          >
+                            {removingId === String(s.id) ? "Removing…" : "Remove"}
+                          </button>
                         </td>
                       </tr>
                     ))}

@@ -6,6 +6,7 @@ import { UserProgress } from "../../models/UserProgress.js";
 import { asyncHandler, ApiError } from "../../utils/asyncHandler.js";
 import { issueTokens } from "../auth/auth.service.js";
 import { sendInstitutionDeleteOtpEmail } from "../../utils/email.js";
+import { Note } from "../../models/Note.js";
 
 function slugify(s: string) {
   return s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
@@ -172,6 +173,91 @@ export const confirmDelete = asyncHandler(async (req: Request, res: Response) =>
     maxAge: 30 * 24 * 60 * 60 * 1000,
   });
   res.json({ ok: true, accessToken });
+});
+
+// -------- Student management --------
+
+export const removeStudent = asyncHandler(async (req: Request, res: Response) => {
+  const institution = await Institution.findOne({ adminUserId: req.user!.id });
+  if (!institution) throw new ApiError(404, "No institution found for this account");
+
+  const student = await User.findOne({ _id: req.params.studentId, institutionId: institution._id });
+  if (!student) throw new ApiError(404, "Student not found in this institution");
+
+  await User.findByIdAndUpdate(student._id, { $unset: { institutionId: "" } });
+  res.json({ ok: true });
+});
+
+// -------- Notices (emailed to every current student) --------
+
+export const sendNotice = asyncHandler(async (req: Request, res: Response) => {
+  const { subject, message } = req.body;
+  const institution = await Institution.findOne({ adminUserId: req.user!.id });
+  if (!institution) throw new ApiError(404, "No institution found for this account");
+
+  const students = await User.find({ institutionId: institution._id, role: "student" }).select("email");
+  await Promise.all(
+    students.map((s) => sendInstitutionNoticeEmail(s.email, institution.name, subject, message))
+  );
+
+  res.json({ ok: true, sentTo: students.length });
+});
+
+// -------- Private notes (visible only to this institution's students) --------
+
+export const listMyNotes = asyncHandler(async (req: Request, res: Response) => {
+  const institution = await Institution.findOne({ adminUserId: req.user!.id });
+  if (!institution) throw new ApiError(404, "No institution found for this account");
+  const notes = await Note.find({ institutionId: institution._id }).sort({ order: 1, createdAt: -1 });
+  res.json({ notes });
+});
+
+function slugifyNote(s: string) {
+  return s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+}
+
+export const createMyNote = asyncHandler(async (req: Request, res: Response) => {
+  const institution = await Institution.findOne({ adminUserId: req.user!.id });
+  if (!institution) throw new ApiError(404, "No institution found for this account");
+
+  const { title, ...rest } = req.body;
+  const existingSlugs = (await Note.find({}, "slug")).map((n) => n.slug);
+  let slug = slugifyNote(title);
+  let i = 2;
+  while (existingSlugs.includes(slug)) slug = `${slugifyNote(title)}-${i++}`;
+
+  const note = await Note.create({ ...rest, title, slug, institutionId: institution._id, isPublished: false });
+  res.status(201).json({ note });
+});
+
+export const updateMyNote = asyncHandler(async (req: Request, res: Response) => {
+  const institution = await Institution.findOne({ adminUserId: req.user!.id });
+  if (!institution) throw new ApiError(404, "No institution found for this account");
+  const note = await Note.findOneAndUpdate(
+    { slug: req.params.slug, institutionId: institution._id },
+    req.body,
+    { new: true }
+  );
+  if (!note) throw new ApiError(404, "Note not found");
+  res.json({ note });
+});
+
+export const toggleMyNotePublish = asyncHandler(async (req: Request, res: Response) => {
+  const institution = await Institution.findOne({ adminUserId: req.user!.id });
+  if (!institution) throw new ApiError(404, "No institution found for this account");
+  const note = await Note.findOne({ slug: req.params.slug, institutionId: institution._id });
+  if (!note) throw new ApiError(404, "Note not found");
+  note.isPublished = !note.isPublished;
+  await note.save();
+  res.json({ note });
+});
+
+export const deleteMyNote = asyncHandler(async (req: Request, res: Response) => {
+  const institution = await Institution.findOne({ adminUserId: req.user!.id });
+  if (!institution) throw new ApiError(404, "No institution found for this account");
+  const note = await Note.findOneAndDelete({ slug: req.params.slug, institutionId: institution._id });
+  if (!note) throw new ApiError(404, "Note not found");
+  res.json({ ok: true });
 });
 
 // -------- Platform-admin oversight (mounted under /admin, requireAdmin) --------

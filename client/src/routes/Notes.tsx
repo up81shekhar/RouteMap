@@ -4,8 +4,10 @@ import * as notesApi from "../api/notes";
 import type { ApiNote } from "../api/notes";
 import AdBannerSlot from "../components/ads/AdBannerSlot";
 import { useDocumentMeta } from "../hooks/useDocumentMeta";
+import { useAuthStore } from "../store/authStore";
 
 export default function Notes() {
+  const accessToken = useAuthStore((s) => s.accessToken);
   useDocumentMeta({
     title: "Free Notes Library",
     description:

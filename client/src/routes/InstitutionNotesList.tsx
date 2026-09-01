@@ -6,7 +6,7 @@ import type { ApiNote } from "../api/notes";
 import { useDocumentMeta } from "../hooks/useDocumentMeta";
 
 export default function InstitutionNotesList() {
-  useDocumentMeta({ title: "Private notes", noindex: true, path: "/institution/notes" });
+  useDocumentMeta({ title: "Class notes", noindex: true, path: "/institution/notes" });
 
   const accessToken = useAuthStore((s) => s.accessToken);
   const [notes, setNotes] = useState<ApiNote[]>([]);

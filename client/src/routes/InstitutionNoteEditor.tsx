@@ -7,7 +7,7 @@ import { useDocumentMeta } from "../hooks/useDocumentMeta";
 export default function InstitutionNoteEditor() {
   const { slug } = useParams<{ slug: string }>();
   const isNew = !slug || slug === "new";
-  useDocumentMeta({ title: isNew ? "New private note" : "Edit private note", noindex: true, path: "/institution/notes" });
+  useDocumentMeta({ title: isNew ? "New class note" : "Edit class note", noindex: true, path: "/institution/notes" });
 
   const navigate = useNavigate();
   const accessToken = useAuthStore((s) => s.accessToken);

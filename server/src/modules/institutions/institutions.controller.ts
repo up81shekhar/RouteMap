@@ -5,7 +5,7 @@ import { User } from "../../models/User.js";
 import { UserProgress } from "../../models/UserProgress.js";
 import { asyncHandler, ApiError } from "../../utils/asyncHandler.js";
 import { issueTokens } from "../auth/auth.service.js";
-import { sendInstitutionDeleteOtpEmail } from "../../utils/email.js";
+import { sendInstitutionDeleteOtpEmail, sendInstitutionNoticeEmail } from "../../utils/email.js";
 import { Note } from "../../models/Note.js";
 
 function slugify(s: string) {

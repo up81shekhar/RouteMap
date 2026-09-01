@@ -11,6 +11,9 @@ const noteSchema = new Schema(
     attachmentType: { type: String, enum: ["pdf", "image", ""], default: "" },
     order: { type: Number, default: 0 },
     isPublished: { type: Boolean, default: false },
+    // Set only for a college's private notes — visible exclusively to that
+    // institution's students, not the public /notes library.
+    institutionId: { type: Schema.Types.ObjectId, ref: "Institution", default: null },
   },
   { timestamps: true }
 );

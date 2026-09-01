@@ -6,9 +6,11 @@ import AdBannerSlot from "../components/ads/AdBannerSlot";
 import ProtectedContent from "../components/ProtectedContent";
 import { useDocumentMeta } from "../hooks/useDocumentMeta";
 import { renderMarkdown } from "../lib/markdown";
+import { useAuthStore } from "../store/authStore";
 
 export default function NoteDetail() {
   const { slug } = useParams<{ slug: string }>();
+  const accessToken = useAuthStore((s) => s.accessToken);
   const [note, setNote] = useState<ApiNote | null>(null);
   const [status, setStatus] = useState<"loading" | "ready" | "error">("loading");
   const contentRef = useRef<HTMLDivElement>(null);

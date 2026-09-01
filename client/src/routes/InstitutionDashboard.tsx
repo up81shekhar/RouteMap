@@ -1,4 +1,4 @@
-import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import { useAuthStore } from "../store/authStore";
 import * as institutionsApi from "../api/institutions";
@@ -14,6 +14,18 @@ function StatCard({ label, value }: { label: string; value: number }) {
   );
 }
 
+function studentsToCsv(students: InstitutionDashboardData["students"]) {
+  const header = "Name,Email,Joined,Lessons Completed,Status\n";
+  const rows = students
+    .map((s) =>
+      [s.name, s.email, new Date(s.joinedAt).toLocaleDateString(), s.lessonsCompleted, s.isActive ? "Active" : "Inactive"]
+        .map((v) => `"${String(v).replace(/"/g, '""')}"`)
+        .join(",")
+    )
+    .join("\n");
+  return header + rows;
+}
+
 export default function InstitutionDashboard() {
   useDocumentMeta({ title: "College dashboard", noindex: true, path: "/institution" });
 
@@ -27,6 +39,12 @@ export default function InstitutionDashboard() {
   const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   const [removingId, setRemovingId] = useState<string | null>(null);
+  const [search, setSearch] = useState("");
+
+  // Invite by email
+  const [inviteEmail, setInviteEmail] = useState("");
+  const [inviteStatus, setInviteStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
+  const [inviteError, setInviteError] = useState<string | null>(null);
 
   // Notice broadcast
   const [noticeSubject, setNoticeSubject] = useState("");
@@ -63,6 +81,13 @@ export default function InstitutionDashboard() {
     refresh();
   }, [accessToken]);
 
+  const filteredStudents = useMemo(() => {
+    if (!data) return [];
+    const q = search.trim().toLowerCase();
+    if (!q) return data.students;
+    return data.students.filter((s) => s.name.toLowerCase().includes(q) || s.email.toLowerCase().includes(q));
+  }, [data, search]);
+
   if (!user) return <Navigate to="/login" replace />;
   if (user.role !== "institution_admin") return <Navigate to="/dashboard" replace />;
 
@@ -71,6 +96,17 @@ export default function InstitutionDashboard() {
     void navigator.clipboard.writeText(data.institution.joinCode);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  }
+
+  function exportCsv() {
+    if (!data) return;
+    const blob = new Blob([studentsToCsv(data.students)], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${data.institution.slug}-students.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
   }
 
   async function handleRemoveStudent(studentId: string, name: string) {
@@ -82,6 +118,22 @@ export default function InstitutionDashboard() {
       refresh();
     } finally {
       setRemovingId(null);
+    }
+  }
+
+  async function handleInvite(e: FormEvent) {
+    e.preventDefault();
+    if (!accessToken) return;
+    setInviteStatus("sending");
+    setInviteError(null);
+    try {
+      await institutionsApi.inviteStudent(inviteEmail, accessToken);
+      setInviteStatus("sent");
+      setInviteEmail("");
+      setTimeout(() => setInviteStatus("idle"), 3000);
+    } catch (err) {
+      setInviteStatus("error");
+      setInviteError(err instanceof Error ? err.message : "Couldn't send that invite — try again.");
     }
   }
 
@@ -188,45 +240,93 @@ export default function InstitutionDashboard() {
             </div>
           )}
 
-          {/* Notice broadcast — emailed to every current student */}
-          <div className="mt-10">
-            <p className="station-code mb-3">Send a notice</p>
-            <form onSubmit={handleSendNotice} className="max-w-xl space-y-3 rounded-card border border-border bg-surface p-4">
-              <input
-                required
-                value={noticeSubject}
-                onChange={(e) => setNoticeSubject(e.target.value)}
-                placeholder="Subject"
-                className="w-full rounded border border-border bg-ink px-3 py-2 text-sm"
-              />
-              <textarea
-                required
-                value={noticeMessage}
-                onChange={(e) => setNoticeMessage(e.target.value)}
-                rows={4}
-                placeholder="Message — emailed to every current student"
-                className="w-full rounded border border-border bg-ink px-3 py-2 text-sm"
-              />
-              {noticeError && <p className="text-xs text-error">{noticeError}</p>}
-              {noticeStatus === "sent" && <p className="text-xs text-success">Sent!</p>}
-              <button
-                type="submit"
-                disabled={noticeStatus === "sending"}
-                className="rounded bg-accent px-4 py-1.5 text-sm font-medium text-white hover:bg-accent-hover disabled:cursor-not-allowed disabled:opacity-60"
-              >
-                {noticeStatus === "sending" ? "Sending…" : "Send to all students"}
-              </button>
-            </form>
+          <div className="mt-10 grid grid-cols-1 gap-6 lg:grid-cols-2">
+            {/* Invite a specific student by email */}
+            <div>
+              <p className="station-code mb-3">Invite a student</p>
+              <form onSubmit={handleInvite} className="space-y-2 rounded-card border border-border bg-surface p-4">
+                <input
+                  required
+                  type="email"
+                  value={inviteEmail}
+                  onChange={(e) => setInviteEmail(e.target.value)}
+                  placeholder="student@email.com"
+                  className="w-full rounded border border-border bg-ink px-3 py-2 text-sm"
+                />
+                {inviteError && <p className="text-xs text-error">{inviteError}</p>}
+                {inviteStatus === "sent" && <p className="text-xs text-success">Invite sent!</p>}
+                <button
+                  type="submit"
+                  disabled={inviteStatus === "sending"}
+                  className="rounded bg-accent px-3 py-1.5 text-xs font-semibold text-white hover:bg-accent-hover disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {inviteStatus === "sending" ? "Sending…" : "Send invite"}
+                </button>
+              </form>
+            </div>
+
+            {/* Notice broadcast — emailed to every current student */}
+            <div>
+              <p className="station-code mb-3">Send a notice</p>
+              <form onSubmit={handleSendNotice} className="space-y-2 rounded-card border border-border bg-surface p-4">
+                <input
+                  required
+                  value={noticeSubject}
+                  onChange={(e) => setNoticeSubject(e.target.value)}
+                  placeholder="Subject"
+                  className="w-full rounded border border-border bg-ink px-3 py-2 text-sm"
+                />
+                <textarea
+                  required
+                  value={noticeMessage}
+                  onChange={(e) => setNoticeMessage(e.target.value)}
+                  rows={2}
+                  placeholder="Message — emailed to every current student"
+                  className="w-full rounded border border-border bg-ink px-3 py-2 text-sm"
+                />
+                {noticeError && <p className="text-xs text-error">{noticeError}</p>}
+                {noticeStatus === "sent" && <p className="text-xs text-success">Sent!</p>}
+                <button
+                  type="submit"
+                  disabled={noticeStatus === "sending"}
+                  className="rounded bg-accent px-3 py-1.5 text-xs font-semibold text-white hover:bg-accent-hover disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {noticeStatus === "sending" ? "Sending…" : "Send to all students"}
+                </button>
+              </form>
+            </div>
           </div>
 
           <div className="mt-10">
-            <p className="station-code mb-3">Students ({data.students.length})</p>
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <p className="station-code">Students ({filteredStudents.length}{search ? ` of ${data.students.length}` : ""})</p>
+              <div className="flex items-center gap-2">
+                <input
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  placeholder="Search name or email…"
+                  className="rounded border border-border bg-surface px-3 py-1.5 text-sm"
+                />
+                <button
+                  onClick={exportCsv}
+                  disabled={data.students.length === 0}
+                  className="rounded border border-border px-3 py-1.5 text-xs text-text-muted hover:border-border-strong hover:text-text-primary disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  Export CSV
+                </button>
+              </div>
+            </div>
+
             {data.students.length === 0 ? (
-              <p className="rounded-card border border-border bg-surface p-6 text-sm text-text-faint">
-                No students yet — share your join code above to get started.
+              <p className="mt-3 rounded-card border border-border bg-surface p-6 text-sm text-text-faint">
+                No students yet — share your join code or invite someone above.
+              </p>
+            ) : filteredStudents.length === 0 ? (
+              <p className="mt-3 rounded-card border border-border bg-surface p-6 text-sm text-text-faint">
+                No students match "{search}".
               </p>
             ) : (
-              <div className="overflow-x-auto rounded-card border border-border">
+              <div className="mt-3 overflow-x-auto rounded-card border border-border">
                 <table className="w-full text-left text-sm">
                   <thead className="bg-surface text-xs uppercase tracking-wide text-text-faint">
                     <tr>
@@ -239,9 +339,13 @@ export default function InstitutionDashboard() {
                     </tr>
                   </thead>
                   <tbody>
-                    {data.students.map((s) => (
+                    {filteredStudents.map((s) => (
                       <tr key={s.id} className="border-t border-border">
-                        <td className="px-4 py-3 text-text-primary">{s.name}</td>
+                        <td className="px-4 py-3">
+                          <Link to={`/institution/students/${s.id}`} className="text-text-primary hover:text-accent hover:underline">
+                            {s.name}
+                          </Link>
+                        </td>
                         <td className="px-4 py-3 text-text-muted">{s.email}</td>
                         <td className="px-4 py-3 text-text-muted">
                           {new Date(s.joinedAt).toLocaleDateString()}

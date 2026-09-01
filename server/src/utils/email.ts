@@ -22,6 +22,26 @@ async function sendEmail(to: string, subject: string, html: string) {
   }
 }
 
+export async function sendInstitutionNoticeEmail(
+  to: string,
+  institutionName: string,
+  subject: string,
+  message: string
+) {
+  await sendEmail(
+    to,
+    `[${institutionName}] ${subject}`,
+    `
+      <div style="font-family: sans-serif; max-width: 480px; margin: 0 auto;">
+        <p style="color: #888; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em;">Notice from ${institutionName}</p>
+        <h2 style="color: #111; margin-top: 4px;">${subject}</h2>
+        <p style="color: #333; white-space: pre-wrap; line-height: 1.6;">${message}</p>
+        <p style="color: #aaa; font-size: 12px; margin-top: 32px;">Sent via RouteMap on behalf of ${institutionName}.</p>
+      </div>
+    `
+  );
+}
+
 export async function sendInstitutionDeleteOtpEmail(to: string, institutionName: string, otp: string) {
   await sendEmail(
     to,

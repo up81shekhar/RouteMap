@@ -144,7 +144,7 @@ export default function InstitutionDashboard() {
                 to="/institution/notes"
                 className="rounded border border-border px-4 py-2 text-sm text-text-primary hover:border-accent hover:text-accent"
               >
-                Private notes
+                Class notes
               </Link>
               {data.institution.joinCode && (
                 <div className="rounded-card border border-border bg-surface px-4 py-3">

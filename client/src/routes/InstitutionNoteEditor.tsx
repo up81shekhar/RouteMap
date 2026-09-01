@@ -67,7 +67,7 @@ export default function InstitutionNoteEditor() {
       <p className="station-code mb-3">
         <Link to="/institution/notes" className="hover:text-text-primary">Private notes</Link> / {isNew ? "New" : slug}
       </p>
-      <h1 className="mb-6 font-display text-2xl font-semibold">{isNew ? "New private note" : "Edit private note"}</h1>
+      <h1 className="mb-6 font-display text-2xl font-semibold">{isNew ? "New class note" : "Edit class note"}</h1>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <Field label="Title">

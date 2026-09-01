@@ -13,10 +13,10 @@ export type ApiNote = {
   isPublished: boolean;
 };
 
-export function listNotes() {
-  return apiFetch<{ notes: ApiNote[] }>("/notes");
+export function listNotes(accessToken?: string) {
+  return apiFetch<{ notes: ApiNote[] }>("/notes", { accessToken });
 }
 
-export function getNote(slug: string) {
-  return apiFetch<{ note: ApiNote }>(`/notes/${slug}`);
+export function getNote(slug: string, accessToken?: string) {
+  return apiFetch<{ note: ApiNote }>(`/notes/${slug}`, { accessToken });
 }

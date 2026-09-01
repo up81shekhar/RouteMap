@@ -57,6 +57,7 @@ export default function InstitutionNotesList() {
         Only visible to students who've joined your institution — never shown in the public Notes library.
       </p>
 
+
       {status === "loading" && <p className="mt-6 text-sm text-text-muted">Loading…</p>}
       {status === "error" && <p className="mt-6 text-sm text-error">Couldn't load notes.</p>}
 

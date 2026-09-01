@@ -55,6 +55,20 @@ export function removeStudent(studentId: string, accessToken: string) {
   return apiFetch<{ ok: true }>(`/institutions/me/students/${studentId}`, { method: "DELETE", accessToken });
 }
 
+export type StudentRoadmapProgress = { roadmapSlug: string; lessonsCompleted: number; lastActivityAt: string | null };
+export type StudentDetail = {
+  student: { id: string; name: string; email: string; joinedAt: string };
+  roadmaps: StudentRoadmapProgress[];
+};
+
+export function getStudentDetail(studentId: string, accessToken: string) {
+  return apiFetch<StudentDetail>(`/institutions/me/students/${studentId}`, { accessToken });
+}
+
+export function inviteStudent(email: string, accessToken: string) {
+  return apiFetch<{ ok: true }>("/institutions/me/invite", { method: "POST", body: { email }, accessToken });
+}
+
 export function sendNotice(subject: string, message: string, accessToken: string) {
   return apiFetch<{ ok: true; sentTo: number }>("/institutions/me/notices", {
     method: "POST",

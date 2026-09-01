@@ -26,6 +26,10 @@ router.post(
 
 // Student management
 router.delete("/me/students/:studentId", requireAuth, requireInstitutionAdmin, controller.removeStudent);
+router.get("/me/students/:studentId", requireAuth, requireInstitutionAdmin, controller.getStudentDetail);
+
+const inviteSchema = z.object({ email: z.string().email() });
+router.post("/me/invite", requireAuth, requireInstitutionAdmin, validateBody(inviteSchema), controller.inviteStudent);
 
 // Notices — emailed to every current student
 const noticeSchema = z.object({ subject: z.string().min(1).max(150), message: z.string().min(1).max(5000) });

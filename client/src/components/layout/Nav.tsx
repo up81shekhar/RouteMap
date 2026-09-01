@@ -138,6 +138,24 @@ export default function Nav() {
             <div className="mt-2 flex gap-2 border-t border-border pt-3">
               {user ? (
                 <>
+                  {user.role === "admin" && (
+                    <Link
+                      to="/admin"
+                      className="flex-1 rounded border border-border py-2 text-center text-sm text-text-muted"
+                      onClick={() => setOpen(false)}
+                    >
+                      Admin
+                    </Link>
+                  )}
+                  {user.role === "institution_admin" && (
+                    <Link
+                      to="/institution"
+                      className="flex-1 rounded border border-border py-2 text-center text-sm text-text-muted"
+                      onClick={() => setOpen(false)}
+                    >
+                      College
+                    </Link>
+                  )}
                   <Link
                     to="/dashboard"
                     className="flex-1 rounded border border-border py-2 text-center text-sm text-text-muted"

@@ -99,6 +99,8 @@ export default function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/institution/create" element={<CreateInstitution />} />
         <Route path="/institution" element={<InstitutionDashboard />} />
+        <Route path="/institution/notes" element={<InstitutionNotesList />} />
+        <Route path="/institution/notes/:slug" element={<InstitutionNoteEditor />} />
 
         <Route
           path="/admin"

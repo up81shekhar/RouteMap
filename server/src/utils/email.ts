@@ -22,6 +22,28 @@ async function sendEmail(to: string, subject: string, html: string) {
   }
 }
 
+export async function sendInstitutionInviteEmail(
+  to: string,
+  institutionName: string,
+  joinCode: string,
+  alreadyHasAccount: boolean
+) {
+  const cta = alreadyHasAccount
+    ? `Log in to RouteMap and enter this join code on your Dashboard to link your account: <strong style="letter-spacing:3px;">${joinCode}</strong>`
+    : `Sign up at RouteMap, then enter this join code on your Dashboard: <strong style="letter-spacing:3px;">${joinCode}</strong>`;
+  await sendEmail(
+    to,
+    `You've been invited to join ${institutionName} on RouteMap`,
+    `
+      <div style="font-family: sans-serif; max-width: 480px; margin: 0 auto;">
+        <h2 style="color: #111;">Join ${institutionName} on RouteMap</h2>
+        <p style="color: #444; line-height: 1.6;">${cta}</p>
+        <p style="color: #aaa; font-size: 12px; margin-top: 32px;">If you weren't expecting this, you can ignore this email.</p>
+      </div>
+    `
+  );
+}
+
 export async function sendInstitutionNoticeEmail(
   to: string,
   institutionName: string,

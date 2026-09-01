@@ -24,4 +24,35 @@ router.post(
   controller.confirmDelete
 );
 
+// Student management
+router.delete("/me/students/:studentId", requireAuth, requireInstitutionAdmin, controller.removeStudent);
+
+// Notices — emailed to every current student
+const noticeSchema = z.object({ subject: z.string().min(1).max(150), message: z.string().min(1).max(5000) });
+router.post("/me/notices", requireAuth, requireInstitutionAdmin, validateBody(noticeSchema), controller.sendNotice);
+
+// Private notes (visible only to this institution's own students)
+const noteSchema = z.object({
+  title: z.string().min(1),
+  description: z.string().min(1),
+  category: z.string().min(1),
+  content: z.string().default(""),
+  attachmentUrl: z.string().default(""),
+  attachmentType: z.enum(["pdf", "image", ""]).default(""),
+  order: z.number().default(0),
+});
+const noteUpdateSchema = noteSchema.partial();
+
+router.get("/me/notes", requireAuth, requireInstitutionAdmin, controller.listMyNotes);
+router.post("/me/notes", requireAuth, requireInstitutionAdmin, validateBody(noteSchema), controller.createMyNote);
+router.put(
+  "/me/notes/:slug",
+  requireAuth,
+  requireInstitutionAdmin,
+  validateBody(noteUpdateSchema),
+  controller.updateMyNote
+);
+router.patch("/me/notes/:slug/publish", requireAuth, requireInstitutionAdmin, controller.toggleMyNotePublish);
+router.delete("/me/notes/:slug", requireAuth, requireInstitutionAdmin, controller.deleteMyNote);
+
 export default router;

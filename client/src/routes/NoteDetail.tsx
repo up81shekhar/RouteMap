@@ -20,7 +20,7 @@ export default function NoteDetail() {
     let cancelled = false;
     setStatus("loading");
     notesApi
-      .getNote(slug)
+      .getNote(slug, accessToken ?? undefined)
       .then(({ note }) => {
         if (!cancelled) {
           setNote(note);
@@ -33,7 +33,7 @@ export default function NoteDetail() {
     return () => {
       cancelled = true;
     };
-  }, [slug]);
+  }, [slug, accessToken]);
 
   useDocumentMeta({
     title: note ? note.title : "Notes",

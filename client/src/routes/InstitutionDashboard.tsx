@@ -114,7 +114,7 @@ export default function InstitutionDashboard() {
   }
 
   async function handleConfirmDelete() {
-    if (!accessToken) return;
+    if (!accessToken || !user) return;
     setDeleteStep("deleting");
     setDeleteError(null);
     try {

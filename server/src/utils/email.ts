@@ -22,6 +22,26 @@ async function sendEmail(to: string, subject: string, html: string) {
   }
 }
 
+export async function sendResourceReportEmail(
+  adminEmail: string,
+  details: { roadmapSlug: string; nodeSlug: string; resourceTitle?: string; reason: string; reporterEmail?: string }
+) {
+  await sendEmail(
+    adminEmail,
+    `Resource report: ${details.roadmapSlug}/${details.nodeSlug}`,
+    `
+      <div style="font-family: sans-serif; max-width: 480px; margin: 0 auto;">
+        <h2 style="color: #111;">A resource was reported</h2>
+        <p style="color: #444;"><strong>Roadmap:</strong> ${details.roadmapSlug}<br/>
+        <strong>Topic:</strong> ${details.nodeSlug}<br/>
+        ${details.resourceTitle ? `<strong>Resource:</strong> ${details.resourceTitle}<br/>` : ""}
+        ${details.reporterEmail ? `<strong>Reported by:</strong> ${details.reporterEmail}<br/>` : ""}</p>
+        <p style="color: #333; white-space: pre-wrap; background: #f4f4f4; padding: 12px; border-radius: 6px;">${details.reason}</p>
+      </div>
+    `
+  );
+}
+
 export async function sendInstitutionInviteEmail(
   to: string,
   institutionName: string,

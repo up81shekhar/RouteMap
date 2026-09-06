@@ -133,18 +133,21 @@ export default function Nav() {
           )}
         </div>
 
-        <button
-          className="flex h-9 w-9 items-center justify-center rounded border border-border md:hidden"
-          onClick={() => setOpen((v) => !v)}
-          aria-expanded={open}
-          aria-label="Toggle menu"
-        >
-          <span className="sr-only">Menu</span>
-          <div className="space-y-1">
-            <span className="block h-0.5 w-4 bg-text-primary" />
-            <span className="block h-0.5 w-4 bg-text-primary" />
-          </div>
-        </button>
+        <div className="flex items-center gap-2 md:hidden">
+          <ThemeToggle />
+          <button
+            className="flex h-9 w-9 items-center justify-center rounded border border-border"
+            onClick={() => setOpen((v) => !v)}
+            aria-expanded={open}
+            aria-label="Toggle menu"
+          >
+            <span className="sr-only">Menu</span>
+            <div className="space-y-1">
+              <span className="block h-0.5 w-4 bg-text-primary" />
+              <span className="block h-0.5 w-4 bg-text-primary" />
+            </div>
+          </button>
+        </div>
       </div>
 
       {open && (

@@ -5,26 +5,31 @@ export default {
   theme: {
     extend: {
       colors: {
-        ink: "#FFFFFF",
-        surface: "#F3F3F1",
-        surfaceRaised: "#EAEAE6",
+        // These read from CSS variables (defined in index.css for :root
+        // and .dark) so every existing bg-ink / text-text-primary / etc.
+        // usage across the app automatically follows the active theme —
+        // no need to touch individual components.
+        ink: "rgb(var(--color-ink) / <alpha-value>)",
+        surface: "rgb(var(--color-surface) / <alpha-value>)",
+        surfaceRaised: "rgb(var(--color-surface-raised) / <alpha-value>)",
         border: {
-          DEFAULT: "#E1E1DC",
-          strong: "#CACAC2",
+          DEFAULT: "rgb(var(--color-border) / <alpha-value>)",
+          strong: "rgb(var(--color-border-strong) / <alpha-value>)",
         },
         text: {
-          primary: "#191A23",
-          muted: "#55565F",
-          faint: "#85868D",
+          primary: "rgb(var(--color-text-primary) / <alpha-value>)",
+          muted: "rgb(var(--color-text-muted) / <alpha-value>)",
+          faint: "rgb(var(--color-text-faint) / <alpha-value>)",
         },
         accent: {
-          DEFAULT: "#3D8B24",
-          hover: "#2C6B1B",
+          DEFAULT: "rgb(var(--color-accent) / <alpha-value>)",
+          hover: "rgb(var(--color-accent-hover) / <alpha-value>)",
         },
         // Positivus-style vivid highlight — used sparingly for bold CTAs,
         // badges, and decorative fills (always paired with dark text on
         // top, never used as body/link text color — lime-on-white fails
-        // contrast, this is a background-fill color only).
+        // contrast, this is a background-fill color only). Fixed across
+        // themes on purpose — it's a brand accent, not a surface color.
         lime: {
           DEFAULT: "#B9FF66",
           dark: "#191A23",
@@ -35,8 +40,12 @@ export default {
           violet: "#6366F1",
           amber: "#E0A82E",
         },
-        success: "#1F9D55",
-        danger: "#D93025",
+        success: "rgb(var(--color-success) / <alpha-value>)",
+        danger: "rgb(var(--color-danger) / <alpha-value>)",
+        // Alias — a lot of components were written using `error` (e.g.
+        // text-error, border-error) but only `danger` was ever defined,
+        // so those utilities were silently no-ops. This makes them work.
+        error: "rgb(var(--color-danger) / <alpha-value>)",
       },
       fontFamily: {
         display: ["'Space Grotesk'", "sans-serif"],

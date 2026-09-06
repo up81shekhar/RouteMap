@@ -4,6 +4,40 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --color-ink: 255 255 255;
+  --color-surface: 243 243 241;
+  --color-surface-raised: 234 234 230;
+  --color-border: 225 225 220;
+  --color-border-strong: 202 202 194;
+  --color-text-primary: 25 26 35;
+  --color-text-muted: 85 86 95;
+  --color-text-faint: 133 134 141;
+  --color-accent: 61 139 36;
+  --color-accent-hover: 44 107 27;
+  --color-success: 31 157 85;
+  --color-danger: 217 48 37;
+}
+
+.dark {
+  --color-ink: 18 19 24;
+  --color-surface: 29 30 37;
+  --color-surface-raised: 38 40 49;
+  --color-border: 52 53 62;
+  --color-border-strong: 72 73 84;
+  --color-text-primary: 240 240 238;
+  --color-text-muted: 168 169 179;
+  --color-text-faint: 112 113 122;
+  --color-accent: 90 189 58;
+  --color-accent-hover: 108 209 76;
+  --color-success: 61 199 116;
+  --color-danger: 235 96 84;
+}
+
+.dark img:not([data-no-dim]) {
+  filter: brightness(0.92);
+}
+
 @layer base {
   * {
     @apply border-border;

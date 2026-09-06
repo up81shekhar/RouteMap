@@ -85,6 +85,7 @@ export default function Nav() {
         </nav>
 
         <div className="hidden items-center gap-3 md:flex">
+          <ThemeToggle />
           <Link
             to="/search"
             aria-label="Search"

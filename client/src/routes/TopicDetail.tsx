@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import ResourceCard from "../components/resource/ResourceCard";
+import * as reportsApi from "../api/reports";
 import PracticeQuiz from "../components/practice/PracticeQuiz";
 import AdBannerSlot from "../components/ads/AdBannerSlot";
 import { getStaticTopicContent } from "../data/sampleRoadmaps";
@@ -357,6 +358,15 @@ export default function TopicDetail() {
                     resource={r}
                     active={r.id === viewingResourceId}
                     onClick={() => setViewingResourceId(r.id)}
+                    onReport={() => {
+                      const reason = window.prompt(`What's wrong with "${r.title}"?`);
+                      if (!reason) return;
+                      void reportsApi.reportResource(
+                        { roadmapSlug: roadmap.slug, nodeSlug: node.slug, resourceTitle: r.title, reason },
+                        accessToken ?? undefined
+                      );
+                      alert("Thanks — we'll take a look.");
+                    }}
                   />
                 ))}
               </div>

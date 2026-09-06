@@ -6,6 +6,7 @@ import PracticeQuiz from "../components/practice/PracticeQuiz";
 import AdBannerSlot from "../components/ads/AdBannerSlot";
 import { getStaticTopicContent } from "../data/sampleRoadmaps";
 import { useProgressStore } from "../store/progressStore";
+import { useAuthStore } from "../store/authStore";
 import { useAdminStore } from "../store/adminStore";
 import * as practiceApi from "../api/practice";
 import { ApiPracticeQuestion } from "../api/practice";

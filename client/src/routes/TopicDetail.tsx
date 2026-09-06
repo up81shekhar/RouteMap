@@ -40,6 +40,7 @@ const DEMO_ARRAYS_PRACTICE: ApiPracticeQuestion[] = [
 export default function TopicDetail() {
   const { roadmapSlug, slug } = useParams();
 
+  const accessToken = useAuthStore((s) => s.accessToken);
   const roadmap = useAdminStore((s) => s.roadmaps.find((r) => r.slug === roadmapSlug));
   const loadRoadmapDetail = useAdminStore((s) => s.loadRoadmapDetail);
   const loadTopicResources = useAdminStore((s) => s.loadTopicResources);

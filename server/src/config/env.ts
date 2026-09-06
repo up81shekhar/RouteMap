@@ -24,6 +24,9 @@ const envSchema = z.object({
   // this, everything else still works; that endpoint just returns a clear
   // 500 telling the admin to set it.
   YOUTUBE_API_KEY: z.string().optional(),
+  // Optional — where "report a broken resource" emails go. Without this,
+  // reports are just logged server-side instead of emailed.
+  ADMIN_EMAIL: z.string().optional(),
 });
 
 const parsed = envSchema.safeParse(process.env);

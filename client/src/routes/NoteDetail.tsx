@@ -7,6 +7,7 @@ import ProtectedContent from "../components/ProtectedContent";
 import { useDocumentMeta } from "../hooks/useDocumentMeta";
 import { renderMarkdown } from "../lib/markdown";
 import { useAuthStore } from "../store/authStore";
+import BookmarkButton from "../components/BookmarkButton";
 
 export default function NoteDetail() {
   const { slug } = useParams<{ slug: string }>();

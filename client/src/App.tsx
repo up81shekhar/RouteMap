@@ -10,6 +10,7 @@ import ForgotPassword from "./routes/ForgotPassword";
 import ResetPassword from "./routes/ResetPassword";
 import Signup from "./routes/Signup";
 import Dashboard from "./routes/Dashboard";
+import Saved from "./routes/Saved";
 import Search from "./routes/Search";
 import About from "./routes/About";
 import Contact from "./routes/Contact";

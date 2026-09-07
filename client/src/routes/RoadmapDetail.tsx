@@ -128,7 +128,16 @@ export default function RoadmapDetail() {
               <span className="rounded-full bg-border px-2 py-0.5 font-mono text-[10px] uppercase text-text-faint">Draft</span>
             )}
           </div>
-          <h1 className="font-display text-2xl font-semibold">{roadmap.title}</h1>
+          <div className="flex items-start justify-between gap-3">
+            <h1 className="font-display text-2xl font-semibold">{roadmap.title}</h1>
+            <BookmarkButton
+              bookmarkKey={`roadmap:${roadmap.slug}`}
+              type="roadmap"
+              title={roadmap.title}
+              path={`/roadmaps/${roadmap.slug}`}
+              className="mt-1 shrink-0"
+            />
+          </div>
           <p className="mt-3 text-sm text-text-muted">{roadmap.description}</p>
 
           <div className="mt-6 space-y-4 text-sm">

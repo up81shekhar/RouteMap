@@ -101,7 +101,16 @@ export default function NoteDetail() {
       <p className="station-code mb-3">
         <Link to="/notes" className="hover:text-text-primary">Notes</Link> / {note.category}
       </p>
-      <h1 className="font-display text-2xl font-semibold">{note.title}</h1>
+      <div className="flex items-start gap-3">
+        <h1 className="font-display text-2xl font-semibold">{note.title}</h1>
+        <BookmarkButton
+          bookmarkKey={`note:${note.slug}`}
+          type="note"
+          title={note.title}
+          path={`/notes/${note.slug}`}
+          className="mt-1 shrink-0"
+        />
+      </div>
       <p className="mt-2 text-sm text-text-muted">{note.description}</p>
 
       {/* First ad — right after the intro, before the actual content */}

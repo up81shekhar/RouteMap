@@ -9,6 +9,7 @@ import { computeNodeStates } from "../utils/nodeStates";
 import { useDocumentMeta, SITE_URL } from "../hooks/useDocumentMeta";
 import { useJsonLd } from "../hooks/useJsonLd";
 import { trackEvent } from "../lib/analytics";
+import BookmarkButton from "../components/BookmarkButton";
 
 const colorHex: Record<LineColor, string> = {
   coral: "#FF6B4A",

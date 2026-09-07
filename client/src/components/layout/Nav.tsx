@@ -194,6 +194,13 @@ export default function Nav() {
                   >
                     Dashboard
                   </Link>
+                  <Link
+                    to="/saved"
+                    className="flex-1 rounded border border-border py-2 text-center text-sm text-text-muted"
+                    onClick={() => setOpen(false)}
+                  >
+                    Saved
+                  </Link>
                   <button
                     onClick={() => {
                       handleLogout();

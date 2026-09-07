@@ -108,6 +108,9 @@ export default function Nav() {
               <Link to="/dashboard" className="text-sm text-text-muted hover:text-text-primary">
                 Dashboard
               </Link>
+              <Link to="/saved" className="text-sm text-text-muted hover:text-text-primary">
+                Saved
+              </Link>
               <button
                 onClick={handleLogout}
                 className="rounded border border-border px-3.5 py-1.5 text-sm text-text-muted hover:border-border-strong hover:text-text-primary"

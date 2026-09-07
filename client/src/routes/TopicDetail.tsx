@@ -231,7 +231,16 @@ export default function TopicDetail() {
 
       <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="font-display text-2xl font-semibold">{node.title}</h1>
+          <div className="flex items-start gap-3">
+            <h1 className="font-display text-2xl font-semibold">{node.title}</h1>
+            <BookmarkButton
+              bookmarkKey={`topic:${roadmap.slug}/${node.slug}`}
+              type="topic"
+              title={node.title}
+              path={`/roadmaps/${roadmap.slug}/${node.slug}`}
+              className="mt-1 shrink-0"
+            />
+          </div>
           <p className="mt-1 text-sm text-text-muted">
             {roadmap.difficulty} · Estimated {node.estimatedHours} hours
             {staticContent.prerequisites.length ? ` · Prerequisites: ${staticContent.prerequisites.join(", ")}` : ""}

@@ -121,7 +121,7 @@ export default function Dashboard() {
         </h1>
 
         {/* Real stats strip — replaces the old static "This week" filler */}
-        <div className="mt-6 grid grid-cols-3 gap-3">
+        <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
           <div className="rounded-card border border-border bg-surface p-4">
             <p className="station-code mb-1">Lessons done</p>
             <p className="font-display text-2xl font-semibold">{totalLessonsCompleted}</p>
@@ -134,7 +134,33 @@ export default function Dashboard() {
             <p className="station-code mb-1">Lines completed</p>
             <p className="font-display text-2xl font-semibold">{finished.length}</p>
           </div>
+          <div className="rounded-card border border-border bg-surface p-4">
+            <p className="station-code mb-1">Day streak</p>
+            <p className="font-display text-2xl font-semibold">{gamification?.streak ?? 0} 🔥</p>
+          </div>
         </div>
+
+        {gamification && gamification.badges.length > 0 && (
+          <div className="mt-6">
+            <p className="station-code mb-3">Badges</p>
+            <div className="flex flex-wrap gap-2">
+              {gamification.badges.map((id) => {
+                const info = BADGE_INFO[id];
+                if (!info) return null;
+                return (
+                  <div
+                    key={id}
+                    title={info.description}
+                    className="flex items-center gap-1.5 rounded-full border border-border bg-surface px-3 py-1.5 text-xs"
+                  >
+                    <span>{info.emoji}</span>
+                    <span className="text-text-primary">{info.label}</span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
 
         {/* Jump back in — the ONE most-relevant next station, computed for real */}
         {activeLine?.nextStation && (

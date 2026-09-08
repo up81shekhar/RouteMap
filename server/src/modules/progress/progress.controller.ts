@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { UserProgress } from "../../models/UserProgress.js";
 import { asyncHandler } from "../../utils/asyncHandler.js";
+import { recordActivityAndCheckBadges } from "../../services/gamification.service.js";
 
 export const getProgress = asyncHandler(async (req: Request, res: Response) => {
   const { roadmapSlug, nodeSlug } = req.query as { roadmapSlug?: string; nodeSlug?: string };
@@ -23,5 +24,7 @@ export const markLessonComplete = asyncHandler(async (req: Request, res: Respons
     },
     { upsert: true, new: true }
   );
-  res.json({ progress });
+
+  const newBadges = await recordActivityAndCheckBadges(req.user!.id);
+  res.json({ progress, newBadges });
 });

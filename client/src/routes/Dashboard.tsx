@@ -37,6 +37,12 @@ export default function Dashboard() {
   const [joinCode, setJoinCode] = useState("");
   const [joinStatus, setJoinStatus] = useState<"idle" | "loading" | "error">("idle");
   const [joinError, setJoinError] = useState<string | null>(null);
+  const [gamification, setGamification] = useState<GamificationStats | null>(null);
+
+  useEffect(() => {
+    if (!accessToken) return;
+    gamificationApi.getMyStats(accessToken).then(setGamification).catch(() => {});
+  }, [accessToken]);
 
   async function handleJoinInstitution(e: FormEvent) {
     e.preventDefault();

@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import * as progressApi from "../api/progress";
 import { useAuthStore } from "./authStore";
+import { useBadgeToastStore } from "./badgeToastStore";
 
 type ProgressState = {
   // key = `${roadmapSlug}/${topicSlug}` -> completed lesson indices
@@ -34,9 +35,14 @@ export const useProgressStore = create<ProgressState>()(
         const { accessToken, isOffline } = useAuthStore.getState();
         if (accessToken && !isOffline) {
           const [roadmapSlug, nodeSlug] = key.split("/");
-          progressApi.markLessonComplete(roadmapSlug, nodeSlug, index, accessToken).catch(() => {
-            // network hiccup or API down — local progress is still saved, will retry next mark
-          });
+          progressApi
+            .markLessonComplete(roadmapSlug, nodeSlug, index, accessToken)
+            .then((res) => {
+              if (res.newBadges?.length) useBadgeToastStore.getState().pushBadges(res.newBadges);
+            })
+            .catch(() => {
+              // network hiccup or API down — local progress is still saved, will retry next mark
+            });
         }
       },
 

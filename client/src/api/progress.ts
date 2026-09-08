@@ -15,7 +15,7 @@ export function getProgress(accessToken: string, roadmapSlug?: string, nodeSlug?
 }
 
 export function markLessonComplete(roadmapSlug: string, nodeSlug: string, lessonIndex: number, accessToken: string) {
-  return apiFetch<{ progress: ApiProgress }>("/progress", {
+  return apiFetch<{ progress: ApiProgress; newBadges: string[] }>("/progress", {
     method: "POST",
     body: { roadmapSlug, nodeSlug, lessonIndex },
     accessToken,

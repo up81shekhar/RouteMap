@@ -1,4 +1,4 @@
-import { useMemo, useState, type FormEvent } from "react";
+import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { Navigate, Link } from "react-router-dom";
 import { useAuthStore } from "../store/authStore";
 import { useProgressStore } from "../store/progressStore";

@@ -100,6 +100,7 @@ export default function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/saved" element={<Saved />} />
+        <Route path="/u/:slug" element={<Profile />} />
         <Route path="/institution/create" element={<CreateInstitution />} />
         <Route path="/institution" element={<InstitutionDashboard />} />
         <Route path="/institution/notes" element={<InstitutionNotesList />} />

@@ -39,11 +39,25 @@ export default function Dashboard() {
   const [joinStatus, setJoinStatus] = useState<"idle" | "loading" | "error">("idle");
   const [joinError, setJoinError] = useState<string | null>(null);
   const [gamification, setGamification] = useState<GamificationStats | null>(null);
+  const [profileSettings, setProfileSettings] = useState<{ publicProfile: boolean; profileSlug: string | null } | null>(null);
+  const [profileToggling, setProfileToggling] = useState(false);
 
   useEffect(() => {
     if (!accessToken) return;
     gamificationApi.getMyStats(accessToken).then(setGamification).catch(() => {});
+    profilesApi.getMyProfileSettings(accessToken).then(setProfileSettings).catch(() => {});
   }, [accessToken]);
+
+  async function toggleProfilePublic() {
+    if (!accessToken || !profileSettings) return;
+    setProfileToggling(true);
+    try {
+      const updated = await profilesApi.updateMyProfileSettings(!profileSettings.publicProfile, accessToken);
+      setProfileSettings(updated);
+    } finally {
+      setProfileToggling(false);
+    }
+  }
 
   async function handleJoinInstitution(e: FormEvent) {
     e.preventDefault();

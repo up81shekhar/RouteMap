@@ -11,6 +11,7 @@ import ResetPassword from "./routes/ResetPassword";
 import Signup from "./routes/Signup";
 import Dashboard from "./routes/Dashboard";
 import Saved from "./routes/Saved";
+import Profile from "./routes/Profile";
 import Search from "./routes/Search";
 import About from "./routes/About";
 import Contact from "./routes/Contact";

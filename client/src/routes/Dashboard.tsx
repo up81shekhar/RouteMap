@@ -11,6 +11,7 @@ import * as authApi from "../api/auth";
 import * as gamificationApi from "../api/gamification";
 import { BADGE_INFO } from "../api/gamification";
 import type { GamificationStats } from "../api/gamification";
+import * as profilesApi from "../api/profiles";
 
 const colorHex: Record<string, string> = { coral: "#FF6B4A", teal: "#38BDF8", violet: "#6366F1", amber: "#E0A82E" };
 

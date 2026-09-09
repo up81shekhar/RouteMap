@@ -20,6 +20,7 @@ import notesRoutes from "./modules/notes/notes.routes.js";
 import reportsRoutes from "./modules/reports/reports.routes.js";
 import bookmarksRoutes from "./modules/bookmarks/bookmarks.routes.js";
 import gamificationRoutes from "./modules/gamification/gamification.routes.js";
+import profilesRoutes from "./modules/profiles/profiles.routes.js";
 import adminRoutes from "./modules/admin/admin.routes.js";
 
 export const app = express();
@@ -76,6 +77,7 @@ app.use("/api/notes", notesRoutes);
 app.use("/api/reports", reportsRoutes);
 app.use("/api/bookmarks", bookmarksRoutes);
 app.use("/api/gamification", gamificationRoutes);
+app.use("/api/profiles", profilesRoutes);
 app.use("/api/admin", adminRoutes);
 
 app.use(notFoundHandler);

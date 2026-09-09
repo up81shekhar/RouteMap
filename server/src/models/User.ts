@@ -21,6 +21,11 @@ const userSchema = new Schema(
       dailyAvailableMinutes: { type: Number, default: 30 },
       currentSkillLevel: { type: String, enum: ["beginner", "intermediate", "advanced"], default: "beginner" },
     },
+    // Opt-in public profile (streak/badges/lessons-completed showcase page).
+    // Off by default — nothing about a student is shown publicly unless
+    // they explicitly turn this on.
+    publicProfile: { type: Boolean, default: false },
+    profileSlug: { type: String, unique: true, sparse: true },
   },
   { timestamps: true }
 );

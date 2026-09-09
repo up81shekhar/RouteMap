@@ -155,6 +155,31 @@ export default function Dashboard() {
           </div>
         </div>
 
+        {profileSettings && (
+          <div className="mt-6 rounded-card border border-border bg-surface p-4">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <p className="text-sm font-medium text-text-primary">Public profile</p>
+                <p className="text-xs text-text-muted">Show your streak, badges, and lessons completed on a shareable page.</p>
+              </div>
+              <button
+                onClick={toggleProfilePublic}
+                disabled={profileToggling}
+                className={`shrink-0 rounded-full px-4 py-1.5 text-xs font-semibold disabled:cursor-not-allowed disabled:opacity-60 ${
+                  profileSettings.publicProfile ? "bg-accent text-white" : "border border-border text-text-muted"
+                }`}
+              >
+                {profileToggling ? "…" : profileSettings.publicProfile ? "Public" : "Private"}
+              </button>
+            </div>
+            {profileSettings.publicProfile && profileSettings.profileSlug && (
+              <Link to={`/u/${profileSettings.profileSlug}`} className="mt-2 block text-xs text-accent hover:underline">
+                routemap-free.vercel.app/u/{profileSettings.profileSlug} →
+              </Link>
+            )}
+          </div>
+        )}
+
         {gamification && gamification.badges.length > 0 && (
           <div className="mt-6">
             <p className="station-code mb-3">Badges</p>

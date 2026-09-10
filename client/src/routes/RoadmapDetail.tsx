@@ -1,7 +1,6 @@
 import { useEffect, useMemo } from "react";
 import { Link, useParams } from "react-router-dom";
 import SkillTree from "../components/roadmap/SkillTree";
-import AdBannerSlot from "../components/ads/AdBannerSlot";
 import { LineColor } from "../data/sampleRoadmaps";
 import { useAdminStore } from "../store/adminStore";
 import { useProgressStore } from "../store/progressStore";
@@ -188,7 +187,6 @@ export default function RoadmapDetail() {
             </Link>
           )}
 
-          <AdBannerSlot variant="sidebar" className="mt-8" />
         </aside>
 
         {/* Main: skill tree */}

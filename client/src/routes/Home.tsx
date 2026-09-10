@@ -2,7 +2,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { useMemo, useState } from "react";
 import LineDiagram from "../components/roadmap/LineDiagram";
 import RoadmapCard, { RoadmapCardData } from "../components/roadmap/RoadmapCard";
-import AdBannerSlot from "../components/ads/AdBannerSlot";
 import { RoadmapCategory } from "../data/sampleRoadmaps";
 import { useAdminStore } from "../store/adminStore";
 import { useDocumentMeta } from "../hooks/useDocumentMeta";
@@ -199,7 +198,6 @@ export default function Home() {
       {/* ── Popular roadmaps ─────────────────────────────────── */}
       <section className="border-t border-border bg-surface/30 py-20">
         <div className="container-page">
-          <AdBannerSlot variant="content" className="mb-12" />
 
           <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <div>
@@ -395,7 +393,6 @@ export default function Home() {
       {/* ── Native ad ────────────────────────────────────────── */}
       <section className="border-t border-border py-10">
         <div className="container-page">
-          <AdBannerSlot variant="rectangle" />
         </div>
       </section>
 

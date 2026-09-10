@@ -3,7 +3,6 @@ import { Link, useParams } from "react-router-dom";
 import ResourceCard from "../components/resource/ResourceCard";
 import * as reportsApi from "../api/reports";
 import PracticeQuiz from "../components/practice/PracticeQuiz";
-import AdBannerSlot from "../components/ads/AdBannerSlot";
 import { getStaticTopicContent } from "../data/sampleRoadmaps";
 import { useProgressStore } from "../store/progressStore";
 import { useAuthStore } from "../store/authStore";
@@ -355,7 +354,6 @@ export default function TopicDetail() {
             </ul>
           </div>
 
-          <AdBannerSlot variant="content" className="mt-10" />
 
           {otherResources.length > 0 && (
             <div className="mt-10">
@@ -420,7 +418,6 @@ export default function TopicDetail() {
             })}
           </ol>
 
-          <AdBannerSlot variant="compactSidebar" className="mt-6" />
         </aside>
       </div>
     </div>

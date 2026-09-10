@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import * as notesApi from "../api/notes";
 import type { ApiNote } from "../api/notes";
-import AdBannerSlot from "../components/ads/AdBannerSlot";
 import { useDocumentMeta } from "../hooks/useDocumentMeta";
 import { useAuthStore } from "../store/authStore";
 
@@ -82,7 +81,6 @@ export default function Notes() {
           </div>
 
           {/* One ad between every couple of category sections — not stacked, not on every section */}
-          {i > 0 && i % 2 === 1 && <AdBannerSlot variant="content" className="mt-10" />}
         </div>
       ))}
     </div>

@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import * as notesApi from "../api/notes";
 import type { ApiNote } from "../api/notes";
-import AdBannerSlot from "../components/ads/AdBannerSlot";
 import ProtectedContent from "../components/ProtectedContent";
 import { useDocumentMeta } from "../hooks/useDocumentMeta";
 import { renderMarkdown } from "../lib/markdown";
@@ -114,7 +113,6 @@ export default function NoteDetail() {
       <p className="mt-2 text-sm text-text-muted">{note.description}</p>
 
       {/* First ad — right after the intro, before the actual content */}
-      <AdBannerSlot variant="content" className="mt-8" />
 
       {hasContent && (
         <div className="mt-8">
@@ -132,7 +130,6 @@ export default function NoteDetail() {
 
       {/* Second ad — always after the written notes, not just when an attachment
           follows too (most notes are text-only, so this was rarely showing before) */}
-      {hasContent && <AdBannerSlot variant="content" className="mt-8" />}
 
       {hasAttachment && (
         <div className="mt-8">
@@ -147,7 +144,6 @@ export default function NoteDetail() {
         </div>
       )}
 
-      <AdBannerSlot variant="content" className="mt-10" />
     </div>
   );
 }

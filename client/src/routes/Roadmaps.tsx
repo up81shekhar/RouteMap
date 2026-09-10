@@ -1,7 +1,6 @@
 import { useMemo } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import RoadmapCard, { RoadmapCardData } from "../components/roadmap/RoadmapCard";
-import AdBannerSlot from "../components/ads/AdBannerSlot";
 import { RoadmapCategory } from "../data/sampleRoadmaps";
 import { useAdminStore } from "../store/adminStore";
 import { useDocumentMeta } from "../hooks/useDocumentMeta";
@@ -93,7 +92,6 @@ export default function Roadmaps() {
         </p>
       )}
 
-      <AdBannerSlot variant="content" className="mt-10" />
 
       <p className="mt-10 text-center text-sm">
         <Link to="/" className="text-accent hover:text-accent-hover">

@@ -1,6 +1,5 @@
 import { FormEvent, useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import AdBannerSlot from "../components/ads/AdBannerSlot";
 import { useAdminStore } from "../store/adminStore";
 import * as searchApi from "../api/search";
 import { ApiUnreachableError } from "../api/client";
@@ -160,7 +159,6 @@ export default function Search() {
         </div>
       )}
 
-      <AdBannerSlot variant="content" className="mt-4" />
     </div>
   );
 }

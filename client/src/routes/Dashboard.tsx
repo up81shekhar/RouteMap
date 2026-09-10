@@ -4,7 +4,6 @@ import { useAuthStore } from "../store/authStore";
 import { useProgressStore } from "../store/progressStore";
 import { useAdminStore } from "../store/adminStore";
 import { getStaticTopicContent } from "../data/sampleRoadmaps";
-import AdBannerSlot from "../components/ads/AdBannerSlot";
 import { useDocumentMeta } from "../hooks/useDocumentMeta";
 import * as institutionsApi from "../api/institutions";
 import * as authApi from "../api/auth";
@@ -328,7 +327,6 @@ export default function Dashboard() {
           </div>
         )}
 
-        <AdBannerSlot variant="sidebar" />
       </aside>
     </div>
   );
